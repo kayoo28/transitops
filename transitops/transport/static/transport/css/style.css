@@ -1,0 +1,24 @@
+:root{
+    --bg:#141414;
+    --sidebar:#1b1b1b;
+    --card:#222222;
+    --orange:#c9871d;
+    --green:#34c759;
+    --blue:#3399ff;
+    --red:#ff5b5b;
+    --text:#ffffff;
+    --gray:#8a8a8a;
+    --border:#333333;
+}
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    font-family: "Inter", sans-serif;
+    background: var(--bg);
+    color: var(--text);
+}
