@@ -1,1 +1,674 @@
-<h1>maintainace</h1>
+{% extends "transport/base.html" %}
+
+{% block title %}
+Maintenance | TransitOps
+{% endblock %}
+
+{% block page_title %}
+Maintenance
+{% endblock %}
+
+{% block content %}
+
+<div class="dashboard-container">
+
+    <!-- ===================================== -->
+    <!-- PAGE HEADER -->
+    <!-- ===================================== -->
+
+    <div class="dashboard-header">
+
+        <div>
+
+            <h2 class="mb-1">
+
+                Maintenance Records
+
+            </h2>
+
+            <p class="text-muted mb-0">
+
+                Manage all vehicle maintenance records.
+
+            </p>
+
+        </div>
+
+        <div>
+
+            <a href="{% url 'maintenance_add' %}"
+               class="btn btn-primary">
+
+                <i class="bi bi-plus-circle me-2"></i>
+
+                Add Maintenance
+
+            </a>
+
+        </div>
+
+    </div>
+
+    <!-- ===================================== -->
+    <!-- SEARCH -->
+    <!-- ===================================== -->
+
+    <div class="dashboard-panel">
+
+        <div class="row">
+
+            <div class="col-md-8">
+
+                <input
+                    type="text"
+                    id="maintenanceSearch"
+                    class="form-control"
+                    placeholder="Search by vehicle, title, service center or mechanic...">
+
+            </div>
+
+            <div class="col-md-4 text-end">
+
+                <span class="badge bg-primary">
+
+                    Total Records :
+                    {{ maintenances|length }}
+
+                </span>
+
+            </div>
+
+        </div>
+
+    </div>
+
+        <!-- ===================================== -->
+    <!-- MAINTENANCE TABLE -->
+    <!-- ===================================== -->
+
+    <div class="dashboard-panel">
+
+        <div class="table-responsive">
+
+            <table class="table table-hover align-middle"
+                   id="maintenanceTable">
+
+                <thead>
+
+                    <tr>
+
+                        <th>#</th>
+
+                        <th>Vehicle</th>
+
+                        <th>Title</th>
+
+                        <th>Service Center</th>
+
+                        <th>Service Date</th>
+
+                        <th>Estimated Cost</th>
+
+                        <th>Status</th>
+
+                        <th class="text-center">
+
+                            Actions
+
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    {% for maintenance in maintenances %}
+
+                    <tr>
+
+                        <td>
+
+                            {{ forloop.counter }}
+
+                        </td>
+
+                        <td>
+
+                            {{ maintenance.vehicle.vehicle_number }}
+
+                        </td>
+
+                        <td>
+
+                            <strong>
+
+                                {{ maintenance.title }}
+
+                            </strong>
+
+                        </td>
+
+                        <td>
+
+                            {{ maintenance.service_center }}
+
+                        </td>
+
+                        <td>
+
+                            {{ maintenance.service_date }}
+
+                        </td>
+
+                        <td>
+
+                            ₹ {{ maintenance.estimated_cost }}
+
+                        </td>
+
+                        <td>
+
+                            {% if maintenance.status == "PENDING" %}
+
+                                <span class="badge bg-warning text-dark">
+
+                                    Pending
+
+                                </span>
+
+                            {% elif maintenance.status == "IN_PROGRESS" %}
+
+                                <span class="badge bg-primary">
+
+                                    In Progress
+
+                                </span>
+
+                            {% elif maintenance.status == "COMPLETED" %}
+
+                                <span class="badge bg-success">
+
+                                    Completed
+
+                                </span>
+
+                            {% elif maintenance.status == "CANCELLED" %}
+
+                                <span class="badge bg-danger">
+
+                                    Cancelled
+
+                                </span>
+
+                            {% else %}
+
+                                <span class="badge bg-secondary">
+
+                                    {{ maintenance.status }}
+
+                                </span>
+
+                            {% endif %}
+
+                        </td>
+
+                        <td class="text-center">
+
+                            <a href="{% url 'maintenance_edit' maintenance.pk %}"
+                               class="btn btn-sm btn-outline-primary me-2">
+
+                                <i class="bi bi-pencil-square"></i>
+
+                            </a>
+
+                            <a href="{% url 'maintenance_delete' maintenance.pk %}"
+                               class="btn btn-sm btn-outline-danger">
+
+                                <i class="bi bi-trash"></i>
+
+                            </a>
+
+                        </td>
+
+                    </tr>
+
+                    {% empty %}
+
+                    <tr>
+
+                        <td colspan="8"
+                            class="text-center py-5 text-muted">
+
+                            <i class="bi bi-tools fs-1 d-block mb-3"></i>
+
+                            No Maintenance Records Found
+
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+        <!-- ===================================== -->
+    <!-- MAINTENANCE SUMMARY -->
+    <!-- ===================================== -->
+
+    <div class="row mt-4">
+
+        <div class="col-lg-3 col-md-6">
+
+            <div class="summary-card text-center">
+
+                <i class="bi bi-tools text-primary fs-1 mb-3"></i>
+
+                <small>
+
+                    Total Records
+
+                </small>
+
+                <h3>
+
+                    {{ maintenances|length }}
+
+                </h3>
+
+            </div>
+
+        </div>
+
+        <div class="col-lg-3 col-md-6">
+
+            <div class="summary-card text-center">
+
+                <i class="bi bi-hourglass-split text-warning fs-1 mb-3"></i>
+
+                <small>
+
+                    Pending Jobs
+
+                </small>
+
+                <h3>
+
+                    {{ pending_count|default:0 }}
+
+                </h3>
+
+            </div>
+
+        </div>
+
+        <div class="col-lg-3 col-md-6">
+
+            <div class="summary-card text-center">
+
+                <i class="bi bi-check-circle-fill text-success fs-1 mb-3"></i>
+
+                <small>
+
+                    Completed Jobs
+
+                </small>
+
+                <h3>
+
+                    {{ completed_count|default:0 }}
+
+                </h3>
+
+            </div>
+
+        </div>
+
+        <div class="col-lg-3 col-md-6">
+
+            <div class="summary-card text-center">
+
+                <i class="bi bi-currency-rupee text-danger fs-1 mb-3"></i>
+
+                <small>
+
+                    Total Cost
+
+                </small>
+
+                <h3>
+
+                    ₹ {{ total_actual_cost|default:"0" }}
+
+                </h3>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- ===================================== -->
+    <!-- QUICK STATISTICS -->
+    <!-- ===================================== -->
+
+    <div class="dashboard-panel mt-4">
+
+        <div class="row">
+
+            <div class="col-md-4 text-center">
+
+                <h5>
+
+                    <i class="bi bi-cash-stack text-primary"></i>
+
+                    Estimated Cost
+
+                </h5>
+
+                <h2 class="mt-3">
+
+                    ₹ {{ total_estimated_cost|default:"0" }}
+
+                </h2>
+
+            </div>
+
+            <div class="col-md-4 text-center">
+
+                <h5>
+
+                    <i class="bi bi-graph-up-arrow text-success"></i>
+
+                    Completion Rate
+
+                </h5>
+
+                <h2 class="mt-3">
+
+                    {{ completion_rate|default:"0" }}%
+
+                </h2>
+
+            </div>
+
+            <div class="col-md-4 text-center">
+
+                <h5>
+
+                    <i class="bi bi-wrench-adjustable-circle text-warning"></i>
+
+                    Maintenance Health
+
+                </h5>
+
+                <h2 class="mt-3">
+
+                    Excellent
+
+                </h2>
+
+            </div>
+
+        </div>
+
+    </div>
+
+        <!-- ===================================== -->
+    <!-- RECENT MAINTENANCE -->
+    <!-- ===================================== -->
+
+    <div class="row mt-4">
+
+        <div class="col-lg-8">
+
+            <div class="dashboard-panel">
+
+                <div class="panel-header">
+
+                    <h5 class="mb-0">
+
+                        Recent Maintenance
+
+                    </h5>
+
+                </div>
+
+                <div class="table-responsive">
+
+                    <table class="table table-striped align-middle">
+
+                        <thead>
+
+                            <tr>
+
+                                <th>Vehicle</th>
+
+                                <th>Title</th>
+
+                                <th>Service Date</th>
+
+                                <th>Status</th>
+
+                            </tr>
+
+                        </thead>
+
+                        <tbody>
+
+                            {% for maintenance in maintenances|slice:":5" %}
+
+                            <tr>
+
+                                <td>
+
+                                    <strong>
+
+                                        {{ maintenance.vehicle.vehicle_number }}
+
+                                    </strong>
+
+                                </td>
+
+                                <td>
+
+                                    {{ maintenance.title }}
+
+                                </td>
+
+                                <td>
+
+                                    {{ maintenance.service_date }}
+
+                                </td>
+
+                                <td>
+
+                                    {% if maintenance.status == "COMPLETED" %}
+
+                                        <span class="badge bg-success">
+
+                                            Completed
+
+                                        </span>
+
+                                    {% elif maintenance.status == "IN_PROGRESS" %}
+
+                                        <span class="badge bg-primary">
+
+                                            In Progress
+
+                                        </span>
+
+                                    {% elif maintenance.status == "PENDING" %}
+
+                                        <span class="badge bg-warning text-dark">
+
+                                            Pending
+
+                                        </span>
+
+                                    {% elif maintenance.status == "CANCELLED" %}
+
+                                        <span class="badge bg-danger">
+
+                                            Cancelled
+
+                                        </span>
+
+                                    {% else %}
+
+                                        <span class="badge bg-secondary">
+
+                                            {{ maintenance.status }}
+
+                                        </span>
+
+                                    {% endif %}
+
+                                </td>
+
+                            </tr>
+
+                            {% empty %}
+
+                            <tr>
+
+                                <td colspan="4"
+
+                                    class="text-center text-muted py-4">
+
+                                    No Maintenance Records Available
+
+                                </td>
+
+                            </tr>
+
+                            {% endfor %}
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- ===================================== -->
+        <!-- MAINTENANCE TIPS -->
+        <!-- ===================================== -->
+
+        <div class="col-lg-4">
+
+            <div class="dashboard-panel">
+
+                <div class="panel-header">
+
+                    <h5 class="mb-0">
+
+                        Maintenance Tips
+
+                    </h5>
+
+                </div>
+
+                <ul class="list-group list-group-flush">
+
+                    <li class="list-group-item">
+
+                        ✔ Schedule preventive maintenance regularly.
+
+                    </li>
+
+                    <li class="list-group-item">
+
+                        ✔ Replace worn-out parts on time.
+
+                    </li>
+
+                    <li class="list-group-item">
+
+                        ✔ Keep service invoices safely stored.
+
+                    </li>
+
+                    <li class="list-group-item">
+
+                        ✔ Monitor recurring maintenance issues.
+
+                    </li>
+
+                    <li class="list-group-item">
+
+                        ✔ Inspect vehicles before every trip.
+
+                    </li>
+
+                </ul>
+
+            </div>
+
+        </div>
+
+    </div>
+
+        <!-- ===================================== -->
+    <!-- PAGE FOOTER -->
+    <!-- ===================================== -->
+
+    <div class="text-center mt-4 mb-2">
+
+        <small class="text-muted">
+
+            TransitOps Maintenance Management • {{ maintenances|length }} Record(s)
+
+        </small>
+
+    </div>
+
+</div>
+
+{% endblock %}
+
+{% block js %}
+
+<script>
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    const searchInput = document.getElementById("maintenanceSearch");
+
+    const table = document.getElementById("maintenanceTable");
+
+    if (!table || !searchInput) return;
+
+    const rows = table.querySelectorAll("tbody tr");
+
+    searchInput.addEventListener("keyup", function () {
+
+        const value = this.value.toLowerCase();
+
+        rows.forEach(function (row) {
+
+            row.style.display =
+                row.innerText.toLowerCase().includes(value)
+                    ? ""
+                    : "none";
+
+        });
+
+    });
+
+});
+
+</script>
+
+{% endblock %}

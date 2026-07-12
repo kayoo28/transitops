@@ -1,0 +1,275 @@
+{% extends "transport/base.html" %}
+
+{% block title %}
+{{ title }} | TransitOps
+{% endblock %}
+
+{% block page_title %}
+{{ title }}
+{% endblock %}
+
+{% block content %}
+
+<div class="dashboard-container">
+
+    <!-- ===================================== -->
+    <!-- PAGE HEADER -->
+    <!-- ===================================== -->
+
+    <div class="dashboard-header">
+
+        <div>
+
+            <h2 class="mb-1">
+
+                {{ title }}
+
+            </h2>
+
+            <p class="text-muted mb-0">
+
+                Add or update fuel record.
+
+            </p>
+
+        </div>
+
+        <div>
+
+            <a href="{% url 'fuel' %}"
+               class="btn btn-outline-secondary">
+
+                <i class="bi bi-arrow-left me-2"></i>
+
+                Back to Fuel Records
+
+            </a>
+
+        </div>
+
+    </div>
+
+    <!-- ===================================== -->
+    <!-- FUEL FORM -->
+    <!-- ===================================== -->
+
+    <div class="dashboard-panel">
+
+        <form method="POST">
+
+            {% csrf_token %}
+
+            <div class="row">
+
+                <!-- Vehicle -->
+
+                <div class="col-md-6 mb-3">
+
+                    <label class="form-label">
+
+                        Vehicle
+
+                    </label>
+
+                    {{ form.vehicle }}
+
+                </div>
+
+                <!-- Trip -->
+
+                <div class="col-md-6 mb-3">
+
+                    <label class="form-label">
+
+                        Trip
+
+                    </label>
+
+                    {{ form.trip }}
+
+                </div>
+
+                <!-- Fuel Date -->
+
+                <div class="col-md-6 mb-3">
+
+                    <label class="form-label">
+
+                        Fuel Date
+
+                    </label>
+
+                    {{ form.fuel_date }}
+
+                </div>
+
+                <!-- Fuel Station -->
+
+                <div class="col-md-6 mb-3">
+
+                    <label class="form-label">
+
+                        Fuel Station
+
+                    </label>
+
+                    {{ form.fuel_station }}
+
+                </div>
+
+                <!-- Quantity -->
+
+                <div class="col-md-6 mb-3">
+
+                    <label class="form-label">
+
+                        Quantity (Litres)
+
+                    </label>
+
+                    {{ form.quantity }}
+
+                </div>
+
+                <!-- Price Per Litre -->
+
+                <div class="col-md-6 mb-3">
+
+                    <label class="form-label">
+
+                        Price Per Litre
+
+                    </label>
+
+                    {{ form.price_per_litre }}
+
+                </div>
+
+                                <!-- Total Cost -->
+
+                <div class="col-md-6 mb-3">
+
+                    <label class="form-label">
+
+                        Total Cost
+
+                    </label>
+
+                    {{ form.total_cost }}
+
+                </div>
+
+                <!-- Odometer Reading -->
+
+                <div class="col-md-6 mb-3">
+
+                    <label class="form-label">
+
+                        Odometer Reading
+
+                    </label>
+
+                    {{ form.odometer_reading }}
+
+                </div>
+
+                <!-- Payment Mode -->
+
+                <div class="col-md-6 mb-3">
+
+                    <label class="form-label">
+
+                        Payment Mode
+
+                    </label>
+
+                    {{ form.payment_mode }}
+
+                </div>
+
+                <!-- Remarks -->
+
+                <div class="col-12 mb-3">
+
+                    <label class="form-label">
+
+                        Remarks
+
+                    </label>
+
+                    {{ form.remarks }}
+
+                </div>
+
+                            </div>
+
+            <!-- ===================================== -->
+            <!-- FORM ERRORS -->
+            <!-- ===================================== -->
+
+            {% if form.errors %}
+
+                <div class="alert alert-danger mt-3">
+
+                    <strong>
+
+                        Please correct the following errors:
+
+                    </strong>
+
+                    {{ form.errors }}
+
+                </div>
+
+            {% endif %}
+
+            <!-- ===================================== -->
+            <!-- INFORMATION -->
+            <!-- ===================================== -->
+
+            <div class="alert alert-info mt-4">
+
+                <i class="bi bi-info-circle me-2"></i>
+
+                Please verify the vehicle, fuel quantity, odometer
+                reading and total cost before saving the record.
+                Accurate fuel records help monitor fuel efficiency
+                and operating expenses.
+
+            </div>
+
+                        <!-- ===================================== -->
+            <!-- FORM BUTTONS -->
+            <!-- ===================================== -->
+
+            <div class="mt-4 d-flex gap-2">
+
+                <button
+                    type="submit"
+                    class="btn btn-primary">
+
+                    <i class="bi bi-check-circle me-2"></i>
+
+                    Save Fuel Record
+
+                </button>
+
+                <a
+                    href="{% url 'fuel' %}"
+                    class="btn btn-outline-secondary">
+
+                    <i class="bi bi-x-circle me-2"></i>
+
+                    Cancel
+
+                </a>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+{% endblock %}

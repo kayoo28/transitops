@@ -1,1 +1,596 @@
-<h1>setting</h1>
+{% extends "transport/base.html" %}
+
+{% block title %}
+Settings | TransitOps
+{% endblock %}
+
+{% block page_title %}
+Settings
+{% endblock %}
+
+{% block content %}
+
+<div class="dashboard-container">
+
+    <!-- ===================================== -->
+    <!-- PAGE HEADER -->
+    <!-- ===================================== -->
+
+    <div class="dashboard-header">
+
+        <div>
+
+            <h2 class="mb-1">
+
+                System Settings
+
+            </h2>
+
+            <p class="text-muted mb-0">
+
+                Configure application preferences and account settings.
+
+            </p>
+
+        </div>
+
+    </div>
+
+    <!-- ===================================== -->
+    <!-- SETTINGS -->
+    <!-- ===================================== -->
+
+    <div class="row">
+
+        <!-- Company Information -->
+
+        <div class="col-lg-6 mb-4">
+
+            <div class="dashboard-panel">
+
+                <h5 class="mb-4">
+
+                    <i class="bi bi-building me-2 text-primary"></i>
+
+                    Company Information
+
+                </h5>
+
+                <form>
+
+                    <div class="mb-3">
+
+                        <label class="form-label">
+
+                            Company Name
+
+                        </label>
+
+                        <input
+                            type="text"
+                            class="form-control"
+                            value="TransitOps">
+
+                    </div>
+
+                    <div class="mb-3">
+
+                        <label class="form-label">
+
+                            Email
+
+                        </label>
+
+                        <input
+                            type="email"
+                            class="form-control"
+                            value="admin@transitops.com">
+
+                    </div>
+
+                    <div class="mb-3">
+
+                        <label class="form-label">
+
+                            Contact Number
+
+                        </label>
+
+                        <input
+                            type="text"
+                            class="form-control"
+                            placeholder="+91 XXXXX XXXXX">
+
+                    </div>
+
+                </form>
+
+            </div>
+
+        </div>
+
+        <!-- Preferences -->
+
+        <div class="col-lg-6 mb-4">
+
+            <div class="dashboard-panel">
+
+                <h5 class="mb-4">
+
+                    <i class="bi bi-sliders me-2 text-success"></i>
+
+                    Preferences
+
+                </h5>
+
+                <div class="form-check form-switch mb-3">
+
+                    <input
+                        class="form-check-input"
+                        type="checkbox"
+                        checked>
+
+                    <label class="form-check-label">
+
+                        Enable Notifications
+
+                    </label>
+
+                </div>
+
+                <div class="form-check form-switch mb-3">
+
+                    <input
+                        class="form-check-input"
+                        type="checkbox"
+                        checked>
+
+                    <label class="form-check-label">
+
+                        Dark Mode
+
+                    </label>
+
+                </div>
+
+                <div class="form-check form-switch">
+
+                    <input
+                        class="form-check-input"
+                        type="checkbox">
+
+                    <label class="form-check-label">
+
+                        Email Reports
+
+                    </label>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+        <div class="row">
+
+        <!-- User Account -->
+
+        <div class="col-lg-6 mb-4">
+
+            <div class="dashboard-panel">
+
+                <h5 class="mb-4">
+
+                    <i class="bi bi-person-circle text-primary me-2"></i>
+
+                    User Account
+
+                </h5>
+
+                <div class="mb-3">
+
+                    <label class="form-label">
+
+                        Username
+
+                    </label>
+
+                    <input
+                        type="text"
+                        class="form-control"
+                        value="{{ request.user.username }}"
+                        readonly>
+
+                </div>
+
+                <div class="mb-3">
+
+                    <label class="form-label">
+
+                        Email
+
+                    </label>
+
+                    <input
+                        type="email"
+                        class="form-control"
+                        value="{{ request.user.email }}"
+                        readonly>
+
+                </div>
+
+                <div class="mb-3">
+
+                    <label class="form-label">
+
+                        Last Login
+
+                    </label>
+
+                    <input
+                        type="text"
+                        class="form-control"
+                        value="{{ request.user.last_login }}"
+                        readonly>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- Security -->
+
+        <div class="col-lg-6 mb-4">
+
+            <div class="dashboard-panel">
+
+                <h5 class="mb-4">
+
+                    <i class="bi bi-shield-lock text-danger me-2"></i>
+
+                    Security
+
+                </h5>
+
+                <div class="d-grid gap-3">
+
+                    <button
+                        class="btn btn-outline-primary">
+
+                        <i class="bi bi-key me-2"></i>
+
+                        Change Password
+
+                    </button>
+
+                    <button
+                        class="btn btn-outline-warning">
+
+                        <i class="bi bi-shield-check me-2"></i>
+
+                        Two-Factor Authentication
+
+                    </button>
+
+                    <button
+                        class="btn btn-outline-danger">
+
+                        <i class="bi bi-box-arrow-right me-2"></i>
+
+                        Logout From All Devices
+
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- ===================================== -->
+    <!-- SYSTEM INFORMATION -->
+    <!-- ===================================== -->
+
+    <div class="dashboard-panel mb-4">
+
+        <h5 class="mb-4">
+
+            <i class="bi bi-cpu text-success me-2"></i>
+
+            System Information
+
+        </h5>
+
+        <div class="row">
+
+            <div class="col-md-3 text-center">
+
+                <h6>
+
+                    Version
+
+                </h6>
+
+                <strong>
+
+                    TransitOps v1.0
+
+                </strong>
+
+            </div>
+
+            <div class="col-md-3 text-center">
+
+                <h6>
+
+                    Framework
+
+                </h6>
+
+                <strong>
+
+                    Django
+
+                </strong>
+
+            </div>
+
+            <div class="col-md-3 text-center">
+
+                <h6>
+
+                    Database
+
+                </h6>
+
+                <strong>
+
+                    SQLite
+
+                </strong>
+
+            </div>
+
+            <div class="col-md-3 text-center">
+
+                <h6>
+
+                    Status
+
+                </h6>
+
+                <span class="badge bg-success">
+
+                    Running
+
+                </span>
+
+            </div>
+
+        </div>
+
+    </div>
+
+        <div class="row">
+
+        <!-- ===================================== -->
+        <!-- BACKUP & RESTORE -->
+        <!-- ===================================== -->
+
+        <div class="col-lg-6 mb-4">
+
+            <div class="dashboard-panel">
+
+                <h5 class="mb-4">
+
+                    <i class="bi bi-cloud-arrow-up text-primary me-2"></i>
+
+                    Backup & Restore
+
+                </h5>
+
+                <p class="text-muted">
+
+                    Create and restore system backups to keep your data safe.
+
+                </p>
+
+                <div class="d-grid gap-2">
+
+                    <button class="btn btn-primary">
+
+                        <i class="bi bi-download me-2"></i>
+
+                        Create Backup
+
+                    </button>
+
+                    <button class="btn btn-outline-secondary">
+
+                        <i class="bi bi-upload me-2"></i>
+
+                        Restore Backup
+
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- ===================================== -->
+        <!-- DATABASE STATISTICS -->
+        <!-- ===================================== -->
+
+        <div class="col-lg-6 mb-4">
+
+            <div class="dashboard-panel">
+
+                <h5 class="mb-4">
+
+                    <i class="bi bi-database text-success me-2"></i>
+
+                    Database Statistics
+
+                </h5>
+
+                <div class="d-flex justify-content-between mb-3">
+
+                    <span>Total Vehicles</span>
+
+                    <strong>{{ vehicle_count|default:0 }}</strong>
+
+                </div>
+
+                <div class="d-flex justify-content-between mb-3">
+
+                    <span>Total Drivers</span>
+
+                    <strong>{{ driver_count|default:0 }}</strong>
+
+                </div>
+
+                <div class="d-flex justify-content-between mb-3">
+
+                    <span>Total Trips</span>
+
+                    <strong>{{ trip_count|default:0 }}</strong>
+
+                </div>
+
+                <div class="d-flex justify-content-between">
+
+                    <span>Total Expenses</span>
+
+                    <strong>{{ expense_count|default:0 }}</strong>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- ===================================== -->
+    <!-- ABOUT TRANSITOPS -->
+    <!-- ===================================== -->
+
+    <div class="dashboard-panel mb-4">
+
+        <h5 class="mb-4">
+
+            <i class="bi bi-info-circle text-primary me-2"></i>
+
+            About TransitOps
+
+        </h5>
+
+        <p>
+
+            <strong>TransitOps</strong> is a Fleet Management System built
+            using Django. It helps manage vehicles, drivers, trips, fuel,
+            maintenance, expenses and analytics from a single dashboard.
+
+        </p>
+
+        <hr>
+
+        <div class="row">
+
+            <div class="col-md-6">
+
+                <strong>Version</strong>
+
+                <p class="text-muted">
+
+                    1.0.0
+
+                </p>
+
+            </div>
+
+            <div class="col-md-6">
+
+                <strong>Developer</strong>
+
+                <p class="text-muted">
+
+                    TransitOps Team
+
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- ===================================== -->
+    <!-- SUPPORT -->
+    <!-- ===================================== -->
+
+    <div class="alert alert-info">
+
+        <i class="bi bi-headset me-2"></i>
+
+        Need help? Contact your system administrator or refer to the
+        project documentation for setup and troubleshooting.
+
+    </div>
+
+        <!-- ===================================== -->
+    <!-- ACTION BUTTONS -->
+    <!-- ===================================== -->
+
+    <div class="dashboard-panel">
+
+        <div class="d-flex justify-content-end gap-3">
+
+            <button
+                type="button"
+                class="btn btn-outline-secondary">
+
+                <i class="bi bi-arrow-counterclockwise me-2"></i>
+
+                Reset
+
+            </button>
+
+            <button
+                type="button"
+                class="btn btn-primary">
+
+                <i class="bi bi-check-circle me-2"></i>
+
+                Save Settings
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}
+
+{% block js %}
+
+<script>
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    console.log("Settings Loaded");
+
+});
+
+</script>
+
+{% endblock %}

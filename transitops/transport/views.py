@@ -3,7 +3,8 @@ from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 
-from django.db.models import Sum
+from django.db.models import Sum, Avg, Max
+from django.utils import timezone
 
 from django.shortcuts import render
 from django.shortcuts import redirect
@@ -157,14 +158,29 @@ def vehicle_list(request):
 
     vehicles = Vehicle.objects.all().order_by("vehicle_number")
 
+    context = {
+
+        "vehicles": vehicles,
+
+        "available_count": vehicles.filter(
+            status="AVAILABLE"
+        ).count(),
+
+        "on_trip_count": vehicles.filter(
+            status="ON_TRIP"
+        ).count(),
+
+        "maintenance_count": vehicles.filter(
+            status="MAINTENANCE"
+        ).count(),
+
+    }
+
     return render(
         request,
         "transport/fleet.html",
-        {
-            "vehicles": vehicles,
-        },
+        context,
     )
-
 
 # ==========================================================
 # ADD VEHICLE
@@ -293,17 +309,38 @@ def vehicle_delete(request, pk):
 # DRIVER LIST
 # ==========================================================
 
+from django.db.models import Avg
+
 @login_required
 def driver_list(request):
 
     drivers = Driver.objects.all().order_by("full_name")
 
+    context = {
+
+        "drivers": drivers,
+
+        "active_driver_count": drivers.filter(
+            active=True
+        ).count(),
+
+        "valid_license_count": drivers.filter(
+            license_status="VALID"
+        ).count(),
+
+        "average_experience": round(
+            drivers.aggregate(
+                Avg("experience")
+            )["experience__avg"] or 0,
+            1,
+        ),
+
+    }
+
     return render(
         request,
         "transport/drivers.html",
-        {
-            "drivers": drivers,
-        },
+        context,
     )
 
 
@@ -435,15 +472,68 @@ def trip_list(request):
 
     trips = Trip.objects.select_related(
         "vehicle",
-        "driver",
-    ).order_by("-start_date", "-start_time")
+        "driver"
+    ).order_by(
+        "-start_date",
+        "-start_time"
+    )
+
+    total_trips = trips.count()
+
+    completed_trip_count = trips.filter(
+        status="COMPLETED"
+    ).count()
+
+    ongoing_trip_count = trips.filter(
+        status="ONGOING"
+    ).count()
+
+    cancelled_trip_count = trips.filter(
+        status="CANCELLED"
+    ).count()
+
+    total_distance = (
+        trips.aggregate(
+            Sum("distance")
+        )["distance__sum"] or 0
+    )
+
+    total_trip_cost = (
+        trips.aggregate(
+            Sum("trip_cost")
+        )["trip_cost__sum"] or 0
+    )
+
+    completion_rate = (
+        round(
+            (completed_trip_count / total_trips) * 100,
+            1,
+        )
+        if total_trips else 0
+    )
+
+    context = {
+
+        "trips": trips,
+
+        "ongoing_trip_count": ongoing_trip_count,
+
+        "completed_trip_count": completed_trip_count,
+
+        "cancelled_trip_count": cancelled_trip_count,
+
+        "total_distance": total_distance,
+
+        "total_trip_cost": total_trip_cost,
+
+        "completion_rate": completion_rate,
+
+    }
 
     return render(
         request,
         "transport/trips.html",
-        {
-            "trips": trips,
-        },
+        context,
     )
 
 
@@ -573,19 +663,74 @@ def trip_delete(request, pk):
 @login_required
 def fuel_list(request):
 
-    fuels = FuelRecord.objects.select_related(
+    records = FuelRecord.objects.select_related(
         "vehicle",
         "trip",
     ).order_by("-fuel_date")
 
+    total_quantity = (
+        records.aggregate(
+            Sum("quantity")
+        )["quantity__sum"] or 0
+    )
+
+    total_cost = (
+        records.aggregate(
+            Sum("total_cost")
+        )["total_cost__sum"] or 0
+    )
+
+    vehicle_count = (
+        records.values("vehicle")
+        .distinct()
+        .count()
+    )
+
+    average_quantity = (
+        records.aggregate(
+            Avg("quantity")
+        )["quantity__avg"] or 0
+    )
+
+    average_cost = (
+        records.aggregate(
+            Avg("total_cost")
+        )["total_cost__avg"] or 0
+    )
+
+    context = {
+
+        "records": records,
+
+        "total_quantity": round(
+            total_quantity,
+            2,
+        ),
+
+        "total_cost": round(
+            total_cost,
+            2,
+        ),
+
+        "vehicle_count": vehicle_count,
+
+        "average_quantity": round(
+            average_quantity,
+            2,
+        ),
+
+        "average_cost": round(
+            average_cost,
+            2,
+        ),
+
+    }
+
     return render(
         request,
         "transport/fuel.html",
-        {
-            "fuels": fuels,
-        },
+        context,
     )
-
 
 @login_required
 def fuel_create(request):
@@ -680,14 +825,66 @@ def fuel_delete(request, pk):
 @login_required
 def maintenance_list(request):
 
-    maintenance = Maintenance.objects.all().order_by("-service_date")
+    maintenances = Maintenance.objects.select_related(
+        "vehicle"
+    ).order_by("-service_date")
+
+    pending_count = maintenances.filter(
+        status="PENDING"
+    ).count()
+
+    completed_count = maintenances.filter(
+        status="COMPLETED"
+    ).count()
+
+    total_estimated_cost = (
+        maintenances.aggregate(
+            Sum("estimated_cost")
+        )["estimated_cost__sum"] or 0
+    )
+
+    total_actual_cost = (
+        maintenances.aggregate(
+            Sum("actual_cost")
+        )["actual_cost__sum"] or 0
+    )
+
+    total_records = maintenances.count()
+
+    completion_rate = (
+        round(
+            (completed_count / total_records) * 100,
+            1,
+        )
+        if total_records else 0
+    )
+
+    context = {
+
+        "maintenances": maintenances,
+
+        "pending_count": pending_count,
+
+        "completed_count": completed_count,
+
+        "total_estimated_cost": round(
+            total_estimated_cost,
+            2,
+        ),
+
+        "total_actual_cost": round(
+            total_actual_cost,
+            2,
+        ),
+
+        "completion_rate": completion_rate,
+
+    }
 
     return render(
         request,
         "transport/maintenance.html",
-        {
-            "maintenance": maintenance,
-        },
+        context,
     )
 
 
@@ -788,14 +985,62 @@ def maintenance_delete(request, pk):
 @login_required
 def expense_list(request):
 
-    expenses = Expense.objects.all().order_by("-expense_date")
+    expenses = Expense.objects.select_related(
+        "vehicle",
+        "trip",
+    ).order_by("-expense_date")
+
+    total_amount = (
+        expenses.aggregate(
+            Sum("amount")
+        )["amount__sum"] or 0
+    )
+
+    average_amount = (
+        expenses.aggregate(
+            Avg("amount")
+        )["amount__avg"] or 0
+    )
+
+    highest_expense = (
+        expenses.aggregate(
+            Max("amount")
+        )["amount__max"] or 0
+    )
+
+    category_count = (
+        expenses.values("category")
+        .distinct()
+        .count()
+    )
+
+    context = {
+
+        "expenses": expenses,
+
+        "total_amount": round(
+            total_amount,
+            2,
+        ),
+
+        "average_amount": round(
+            average_amount,
+            2,
+        ),
+
+        "highest_expense": round(
+            highest_expense,
+            2,
+        ),
+
+        "category_count": category_count,
+
+    }
 
     return render(
         request,
         "transport/expenses.html",
-        {
-            "expenses": expenses,
-        },
+        context,
     )
 
 
@@ -896,19 +1141,171 @@ def expense_delete(request, pk):
 @login_required
 def analytics(request):
 
-    context = {
-        "vehicle_count": Vehicle.objects.count(),
-        "driver_count": Driver.objects.count(),
-        "trip_count": Trip.objects.count(),
-        "expense_total": Expense.objects.aggregate(
-            total=Sum("amount")
-        )["total"] or 0,
-    }
+    vehicle_count = Vehicle.objects.count()
+
+    driver_count = Driver.objects.count()
+
+    trip_count = Trip.objects.count()
+
+    revenue = (
+        Trip.objects.aggregate(
+            Sum("trip_cost")
+        )["trip_cost__sum"] or 0
+    )
+
+    available_vehicles = Vehicle.objects.filter(
+        status="AVAILABLE"
+    ).count()
+
+    on_trip_vehicles = Vehicle.objects.filter(
+        status="ON_TRIP"
+    ).count()
+
+    maintenance_vehicles = Vehicle.objects.filter(
+        status="MAINTENANCE"
+    ).count()
+
+    fuel_quantity = (
+        FuelRecord.objects.aggregate(
+            Sum("quantity")
+        )["quantity__sum"] or 0
+    )
+
+    fuel_cost = (
+        FuelRecord.objects.aggregate(
+            Sum("total_cost")
+        )["total_cost__sum"] or 0
+    )
+
+    avg_fuel_cost = (
+        FuelRecord.objects.aggregate(
+            Avg("total_cost")
+        )["total_cost__avg"] or 0
+    )
+
+    completed_maintenance = Maintenance.objects.filter(
+        status="COMPLETED"
+    ).count()
+
+    pending_maintenance = Maintenance.objects.filter(
+        status="PENDING"
+    ).count()
+
+    maintenance_cost = (
+        Maintenance.objects.aggregate(
+            Sum("actual_cost")
+        )["actual_cost__sum"] or 0
+    )
+
+    expense_total = (
+        Expense.objects.aggregate(
+            Sum("amount")
+        )["amount__sum"] or 0
+    )
+
+    avg_expense = (
+        Expense.objects.aggregate(
+            Avg("amount")
+        )["amount__avg"] or 0
+    )
+
+    highest_expense = (
+        Expense.objects.aggregate(
+            Max("amount")
+        )["amount__max"] or 0
+    )
+
+    completed_trips = Trip.objects.filter(
+        status="COMPLETED"
+    ).count()
+
+    completion_rate = (
+        round((completed_trips / trip_count) * 100, 1)
+        if trip_count else 0
+    )
+
+    fleet_utilization = (
+        round((on_trip_vehicles / vehicle_count) * 100, 1)
+        if vehicle_count else 0
+    )
+
+    active_drivers = Driver.objects.filter(
+        active=True
+    ).count()
+
+    active_trips = Trip.objects.filter(
+        status="ONGOING"
+    ).count()
+
+    maintenance_due = Maintenance.objects.filter(
+        status="PENDING"
+    ).count()
+
+    total_distance = (
+        Trip.objects.aggregate(
+            Sum("distance")
+        )["distance__sum"] or 0
+    )
+
+    average_distance = (
+        Trip.objects.aggregate(
+            Avg("distance")
+        )["distance__avg"] or 0
+    )
+
+    licensed_drivers = Driver.objects.filter(
+        license_status="VALID"
+    ).count()
+
+    avg_driver_experience = (
+        Driver.objects.aggregate(
+            Avg("experience")
+        )["experience__avg"] or 0
+    )
+
+    driver_availability = (
+        round((active_drivers / driver_count) * 100, 1)
+        if driver_count else 0
+    )
+
+    recent_trips = Trip.objects.order_by(
+        "-start_date",
+        "-start_time",
+    )[:5]
 
     return render(
         request,
         "transport/analytics.html",
-        context,
+        {
+            "vehicle_count": vehicle_count,
+            "driver_count": driver_count,
+            "trip_count": trip_count,
+            "revenue": revenue,
+            "available_vehicles": available_vehicles,
+            "on_trip_vehicles": on_trip_vehicles,
+            "maintenance_vehicles": maintenance_vehicles,
+            "fuel_quantity": round(fuel_quantity, 2),
+            "fuel_cost": round(fuel_cost, 2),
+            "avg_fuel_cost": round(avg_fuel_cost, 2),
+            "completed_maintenance": completed_maintenance,
+            "pending_maintenance": pending_maintenance,
+            "maintenance_cost": round(maintenance_cost, 2),
+            "expense_total": round(expense_total, 2),
+            "avg_expense": round(avg_expense, 2),
+            "highest_expense": round(highest_expense, 2),
+            "completion_rate": completion_rate,
+            "fleet_utilization": fleet_utilization,
+            "active_drivers": active_drivers,
+            "active_trips": active_trips,
+            "maintenance_due": maintenance_due,
+            "total_distance": round(total_distance, 2),
+            "average_distance": round(average_distance, 2),
+            "completed_trips": completed_trips,
+            "licensed_drivers": licensed_drivers,
+            "avg_driver_experience": round(avg_driver_experience, 1),
+            "driver_availability": driver_availability,
+            "recent_trips": recent_trips,
+        },
     )
 
 
@@ -919,11 +1316,148 @@ def analytics(request):
 @login_required
 def reports(request):
 
+    trip_count = Trip.objects.count()
+
+    revenue = (
+        Trip.objects.aggregate(
+            Sum("trip_cost")
+        )["trip_cost__sum"] or 0
+    )
+
+    expenses = (
+        Expense.objects.aggregate(
+            Sum("amount")
+        )["amount__sum"] or 0
+    )
+
+    profit = revenue - expenses
+
+    vehicle_count = Vehicle.objects.count()
+
+    available_vehicles = Vehicle.objects.filter(
+        status="AVAILABLE"
+    ).count()
+
+    maintenance_vehicles = Vehicle.objects.filter(
+        status="MAINTENANCE"
+    ).count()
+
+    completed_trips = Trip.objects.filter(
+        status="COMPLETED"
+    ).count()
+
+    ongoing_trips = Trip.objects.filter(
+        status="ONGOING"
+    ).count()
+
+    cancelled_trips = Trip.objects.filter(
+        status="CANCELLED"
+    ).count()
+
+    completed_services = Maintenance.objects.filter(
+        status="COMPLETED"
+    ).count()
+
+    pending_services = Maintenance.objects.filter(
+        status="PENDING"
+    ).count()
+
+    maintenance_cost = (
+        Maintenance.objects.aggregate(
+            Sum("actual_cost")
+        )["actual_cost__sum"] or 0
+    )
+
+    monthly_trips = Trip.objects.filter(
+        start_date__month=timezone.now().month
+    ).count()
+
+    monthly_revenue = (
+        Trip.objects.filter(
+            start_date__month=timezone.now().month
+        ).aggregate(
+            Sum("trip_cost")
+        )["trip_cost__sum"] or 0
+    )
+
+    monthly_expenses = (
+        Expense.objects.filter(
+            expense_date__month=timezone.now().month
+        ).aggregate(
+            Sum("amount")
+        )["amount__sum"] or 0
+    )
+
+    fleet_utilization = (
+        round((ongoing_trips / vehicle_count) * 100, 1)
+        if vehicle_count else 0
+    )
+
+    average_distance = (
+        Trip.objects.aggregate(
+            Avg("distance")
+        )["distance__avg"] or 0
+    )
+
+    completion_rate = (
+        round((completed_trips / trip_count) * 100, 1)
+        if trip_count else 0
+    )
+
+    maintenance_completion = (
+        round(
+            (completed_services /
+             (completed_services + pending_services)) * 100,
+            1,
+        )
+        if (completed_services + pending_services) else 0
+    )
+
+    profit_margin = (
+        round((profit / revenue) * 100, 1)
+        if revenue else 0
+    )
+
+    recent_reports = []
+
     return render(
         request,
         "transport/reports.html",
-    )
+        {
 
+            "trip_count": trip_count,
+            "revenue": round(revenue, 2),
+            "expenses": round(expenses, 2),
+            "profit": round(profit, 2),
+
+            "vehicle_count": vehicle_count,
+            "available_vehicles": available_vehicles,
+            "maintenance_vehicles": maintenance_vehicles,
+
+            "completed_trips": completed_trips,
+            "ongoing_trips": ongoing_trips,
+            "cancelled_trips": cancelled_trips,
+
+            "completed_services": completed_services,
+            "pending_services": pending_services,
+            "maintenance_cost": round(maintenance_cost, 2),
+
+            "monthly_trips": monthly_trips,
+            "monthly_revenue": round(monthly_revenue, 2),
+            "monthly_expenses": round(monthly_expenses, 2),
+
+            "fleet_utilization": fleet_utilization,
+            "average_distance": round(average_distance, 2),
+
+            "completion_rate": completion_rate,
+            "fuel_efficiency": "N/A",
+            "maintenance_completion": maintenance_completion,
+            "profit_margin": profit_margin,
+
+            "recent_reports": recent_reports,
+
+        },
+    )
 
 # ==========================================================
 # SETTINGS
@@ -937,3 +1471,24 @@ def settings_page(request):
         "transport/settings.html",
     )
 
+
+@login_required
+def settings_view(request):
+
+    context = {
+
+        "vehicle_count": Vehicle.objects.count(),
+
+        "driver_count": Driver.objects.count(),
+
+        "trip_count": Trip.objects.count(),
+
+        "expense_count": Expense.objects.count(),
+
+    }
+
+    return render(
+        request,
+        "transport/settings.html",
+        context,
+    )

@@ -228,4 +228,9 @@ urlpatterns = [
         name="settings",
     ),
 
+path(
+    "settings/",
+    views.settings_view,
+    name="settings",
+),
 ]

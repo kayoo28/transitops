@@ -1,1 +1,600 @@
-<h1>fuel</h1>
+{% extends "transport/base.html" %}
+
+{% block title %}
+Fuel Records | TransitOps
+{% endblock %}
+
+{% block page_title %}
+Fuel Records
+{% endblock %}
+
+{% block content %}
+
+<div class="dashboard-container">
+
+    <!-- ===================================== -->
+    <!-- PAGE HEADER -->
+    <!-- ===================================== -->
+
+    <div class="dashboard-header">
+
+        <div>
+
+            <h2 class="mb-1">
+
+                Fuel Records
+
+            </h2>
+
+            <p class="text-muted mb-0">
+
+                Manage all vehicle fuel entries.
+
+            </p>
+
+        </div>
+
+        <div>
+
+            <a href="{% url 'fuel_add' %}"
+               class="btn btn-primary">
+
+                <i class="bi bi-plus-circle me-2"></i>
+
+                Add Fuel Record
+
+            </a>
+
+        </div>
+
+    </div>
+
+    <!-- ===================================== -->
+    <!-- SEARCH -->
+    <!-- ===================================== -->
+
+    <div class="dashboard-panel">
+
+        <div class="row">
+
+            <div class="col-md-8">
+
+                <input
+                    type="text"
+                    id="fuelSearch"
+                    class="form-control"
+                    placeholder="Search by vehicle, trip or fuel station...">
+
+            </div>
+
+            <div class="col-md-4 text-end">
+
+                <span class="badge bg-primary">
+
+                    Total Records :
+                    {{ records|length }}
+
+                </span>
+
+            </div>
+
+        </div>
+
+    </div>
+
+        <!-- ===================================== -->
+    <!-- FUEL RECORD TABLE -->
+    <!-- ===================================== -->
+
+    <div class="dashboard-panel">
+
+        <div class="table-responsive">
+
+            <table class="table table-hover align-middle" id="fuelTable">
+
+                <thead>
+
+                    <tr>
+
+                        <th>#</th>
+
+                        <th>Vehicle</th>
+
+                        <th>Trip</th>
+
+                        <th>Fuel Date</th>
+
+                        <th>Station</th>
+
+                        <th>Quantity (L)</th>
+
+                        <th>Total Cost</th>
+
+                        <th class="text-center">
+
+                            Actions
+
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    {% for record in records %}
+
+                    <tr>
+
+                        <td>
+
+                            {{ forloop.counter }}
+
+                        </td>
+
+                        <td>
+
+                            {{ record.vehicle.vehicle_number }}
+
+                        </td>
+
+                        <td>
+
+                            {% if record.trip %}
+
+                                {{ record.trip.trip_id }}
+
+                            {% else %}
+
+                                --
+
+                            {% endif %}
+
+                        </td>
+
+                        <td>
+
+                            {{ record.fuel_date }}
+
+                        </td>
+
+                        <td>
+
+                            {{ record.fuel_station }}
+
+                        </td>
+
+                        <td>
+
+                            {{ record.quantity }}
+
+                        </td>
+
+                        <td>
+
+                            ₹ {{ record.total_cost }}
+
+                        </td>
+
+                        <td class="text-center">
+
+                            <a href="{% url 'fuel_edit' record.pk %}"
+
+                               class="btn btn-sm btn-outline-primary me-2">
+
+                                <i class="bi bi-pencil-square"></i>
+
+                            </a>
+
+                            <a href="{% url 'fuel_delete' record.pk %}"
+
+                               class="btn btn-sm btn-outline-danger">
+
+                                <i class="bi bi-trash"></i>
+
+                            </a>
+
+                        </td>
+
+                    </tr>
+
+                    {% empty %}
+
+                    <tr>
+
+                        <td colspan="8"
+
+                            class="text-center py-5 text-muted">
+
+                            <i class="bi bi-fuel-pump fs-1 d-block mb-3"></i>
+
+                            No Fuel Records Found
+
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+        <!-- ===================================== -->
+    <!-- FUEL SUMMARY -->
+    <!-- ===================================== -->
+
+    <div class="row mt-4">
+
+        <div class="col-lg-3 col-md-6">
+
+            <div class="summary-card text-center">
+
+                <i class="bi bi-fuel-pump-fill text-primary fs-1 mb-3"></i>
+
+                <small>
+
+                    Total Records
+
+                </small>
+
+                <h3>
+
+                    {{ records|length }}
+
+                </h3>
+
+            </div>
+
+        </div>
+
+        <div class="col-lg-3 col-md-6">
+
+            <div class="summary-card text-center">
+
+                <i class="bi bi-droplet-half text-success fs-1 mb-3"></i>
+
+                <small>
+
+                    Fuel Consumed
+
+                </small>
+
+                <h3>
+
+                    {{ total_quantity|default:"0" }} L
+
+                </h3>
+
+            </div>
+
+        </div>
+
+        <div class="col-lg-3 col-md-6">
+
+            <div class="summary-card text-center">
+
+                <i class="bi bi-currency-rupee text-warning fs-1 mb-3"></i>
+
+                <small>
+
+                    Total Cost
+
+                </small>
+
+                <h3>
+
+                    ₹ {{ total_cost|default:"0" }}
+
+                </h3>
+
+            </div>
+
+        </div>
+
+        <div class="col-lg-3 col-md-6">
+
+            <div class="summary-card text-center">
+
+                <i class="bi bi-truck text-danger fs-1 mb-3"></i>
+
+                <small>
+
+                    Vehicles Refueled
+
+                </small>
+
+                <h3>
+
+                    {{ vehicle_count|default:"0" }}
+
+                </h3>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- ===================================== -->
+    <!-- QUICK STATISTICS -->
+    <!-- ===================================== -->
+
+    <div class="dashboard-panel mt-4">
+
+        <div class="row">
+
+            <div class="col-md-4 text-center">
+
+                <h5>
+
+                    <i class="bi bi-speedometer2 text-primary"></i>
+
+                    Avg Fuel / Entry
+
+                </h5>
+
+                <h2 class="mt-3">
+
+                    {{ average_quantity|default:"0" }} L
+
+                </h2>
+
+            </div>
+
+            <div class="col-md-4 text-center">
+
+                <h5>
+
+                    <i class="bi bi-cash-stack text-success"></i>
+
+                    Avg Cost
+
+                </h5>
+
+                <h2 class="mt-3">
+
+                    ₹ {{ average_cost|default:"0" }}
+
+                </h2>
+
+            </div>
+
+            <div class="col-md-4 text-center">
+
+                <h5>
+
+                    <i class="bi bi-graph-up-arrow text-warning"></i>
+
+                    Fuel Efficiency
+
+                </h5>
+
+                <h2 class="mt-3">
+
+                    Excellent
+
+                </h2>
+
+            </div>
+
+        </div>
+
+    </div>
+
+        <!-- ===================================== -->
+    <!-- RECENT FUEL RECORDS -->
+    <!-- ===================================== -->
+
+    <div class="row mt-4">
+
+        <div class="col-lg-8">
+
+            <div class="dashboard-panel">
+
+                <div class="panel-header">
+
+                    <h5 class="mb-0">
+
+                        Recent Fuel Records
+
+                    </h5>
+
+                </div>
+
+                <div class="table-responsive">
+
+                    <table class="table table-striped align-middle">
+
+                        <thead>
+
+                            <tr>
+
+                                <th>Vehicle</th>
+
+                                <th>Date</th>
+
+                                <th>Quantity</th>
+
+                                <th>Total Cost</th>
+
+                            </tr>
+
+                        </thead>
+
+                        <tbody>
+
+                            {% for record in records|slice:":5" %}
+
+                            <tr>
+
+                                <td>
+
+                                    <strong>
+
+                                        {{ record.vehicle.vehicle_number }}
+
+                                    </strong>
+
+                                </td>
+
+                                <td>
+
+                                    {{ record.fuel_date }}
+
+                                </td>
+
+                                <td>
+
+                                    {{ record.quantity }} L
+
+                                </td>
+
+                                <td>
+
+                                    ₹ {{ record.total_cost }}
+
+                                </td>
+
+                            </tr>
+
+                            {% empty %}
+
+                            <tr>
+
+                                <td colspan="4"
+
+                                    class="text-center text-muted py-4">
+
+                                    No Fuel Records Available
+
+                                </td>
+
+                            </tr>
+
+                            {% endfor %}
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- ===================================== -->
+        <!-- FUEL MANAGEMENT TIPS -->
+        <!-- ===================================== -->
+
+        <div class="col-lg-4">
+
+            <div class="dashboard-panel">
+
+                <div class="panel-header">
+
+                    <h5 class="mb-0">
+
+                        Fuel Management Tips
+
+                    </h5>
+
+                </div>
+
+                <ul class="list-group list-group-flush">
+
+                    <li class="list-group-item">
+
+                        ✔ Record fuel immediately after refilling.
+
+                    </li>
+
+                    <li class="list-group-item">
+
+                        ✔ Verify odometer reading every time.
+
+                    </li>
+
+                    <li class="list-group-item">
+
+                        ✔ Compare mileage regularly.
+
+                    </li>
+
+                    <li class="list-group-item">
+
+                        ✔ Keep fuel bills safely stored.
+
+                    </li>
+
+                    <li class="list-group-item">
+
+                        ✔ Monitor abnormal fuel consumption.
+
+                    </li>
+
+                </ul>
+
+            </div>
+
+        </div>
+
+    </div>
+
+        <!-- ===================================== -->
+    <!-- PAGE FOOTER -->
+    <!-- ===================================== -->
+
+    <div class="text-center mt-4 mb-2">
+
+        <small class="text-muted">
+
+            TransitOps Fuel Management • {{ records|length }} Record(s)
+
+        </small>
+
+    </div>
+
+</div>
+
+{% endblock %}
+
+{% block js %}
+
+<script>
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    const searchInput = document.getElementById("fuelSearch");
+
+    const table = document.getElementById("fuelTable");
+
+    if (!table || !searchInput) return;
+
+    const rows = table.querySelectorAll("tbody tr");
+
+    searchInput.addEventListener("keyup", function () {
+
+        const value = this.value.toLowerCase();
+
+        rows.forEach(function (row) {
+
+            row.style.display =
+                row.innerText.toLowerCase().includes(value)
+                    ? ""
+                    : "none";
+
+        });
+
+    });
+
+});
+
+</script>
+
+{% endblock %}

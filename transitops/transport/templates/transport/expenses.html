@@ -1,11 +1,11 @@
 {% extends "transport/base.html" %}
 
 {% block title %}
-Trips | TransitOps
+Expenses | TransitOps
 {% endblock %}
 
 {% block page_title %}
-Trips
+Expenses
 {% endblock %}
 
 {% block content %}
@@ -22,13 +22,13 @@ Trips
 
             <h2 class="mb-1">
 
-                Trip Management
+                Expense Management
 
             </h2>
 
             <p class="text-muted mb-0">
 
-                Manage all transport trips.
+                Manage all transport expenses.
 
             </p>
 
@@ -36,12 +36,12 @@ Trips
 
         <div>
 
-            <a href="{% url 'trip_add' %}"
+            <a href="{% url 'expense_add' %}"
                class="btn btn-primary">
 
                 <i class="bi bi-plus-circle me-2"></i>
 
-                Add Trip
+                Add Expense
 
             </a>
 
@@ -61,9 +61,9 @@ Trips
 
                 <input
                     type="text"
-                    id="tripSearch"
+                    id="expenseSearch"
                     class="form-control"
-                    placeholder="Search by Trip ID, Vehicle, Driver, Source or Destination...">
+                    placeholder="Search by vehicle, trip, category or description...">
 
             </div>
 
@@ -71,8 +71,8 @@ Trips
 
                 <span class="badge bg-primary">
 
-                    Total Trips :
-                    {{ trips|length }}
+                    Total Expenses :
+                    {{ expenses|length }}
 
                 </span>
 
@@ -83,14 +83,15 @@ Trips
     </div>
 
         <!-- ===================================== -->
-    <!-- TRIP TABLE -->
+    <!-- EXPENSE TABLE -->
     <!-- ===================================== -->
 
     <div class="dashboard-panel">
 
         <div class="table-responsive">
 
-            <table class="table table-hover align-middle" id="tripTable">
+            <table class="table table-hover align-middle"
+                   id="expenseTable">
 
                 <thead>
 
@@ -98,17 +99,17 @@ Trips
 
                         <th>#</th>
 
-                        <th>Trip ID</th>
-
                         <th>Vehicle</th>
 
-                        <th>Driver</th>
+                        <th>Trip</th>
 
-                        <th>Route</th>
+                        <th>Category</th>
 
-                        <th>Start Date</th>
+                        <th>Expense Date</th>
 
-                        <th>Status</th>
+                        <th>Amount</th>
+
+                        <th>Description</th>
 
                         <th class="text-center">
 
@@ -122,7 +123,7 @@ Trips
 
                 <tbody>
 
-                    {% for trip in trips %}
+                    {% for expense in expenses %}
 
                     <tr>
 
@@ -134,109 +135,55 @@ Trips
 
                         <td>
 
-                            <strong>
-
-                                {{ trip.trip_id }}
-
-                            </strong>
+                            {{ expense.vehicle.vehicle_number }}
 
                         </td>
 
                         <td>
 
-                            {{ trip.vehicle.vehicle_number }}
+                            {% if expense.trip %}
 
-                        </td>
-
-                        <td>
-
-                            {{ trip.driver.full_name }}
-
-                        </td>
-
-                        <td>
-
-                            <strong>
-
-                                {{ trip.source }}
-
-                            </strong>
-
-                            <br>
-
-                            <small class="text-muted">
-
-                                <i class="bi bi-arrow-right"></i>
-
-                                {{ trip.destination }}
-
-                            </small>
-
-                        </td>
-
-                        <td>
-
-                            {{ trip.start_date }}
-
-                            <br>
-
-                            <small class="text-muted">
-
-                                {{ trip.start_time }}
-
-                            </small>
-
-                        </td>
-
-                        <td>
-
-                            {% if trip.status == "SCHEDULED" %}
-
-                                <span class="badge bg-secondary">
-
-                                    Scheduled
-
-                                </span>
-
-                            {% elif trip.status == "ONGOING" %}
-
-                                <span class="badge bg-primary">
-
-                                    Ongoing
-
-                                </span>
-
-                            {% elif trip.status == "COMPLETED" %}
-
-                                <span class="badge bg-success">
-
-                                    Completed
-
-                                </span>
-
-                            {% elif trip.status == "CANCELLED" %}
-
-                                <span class="badge bg-danger">
-
-                                    Cancelled
-
-                                </span>
+                                {{ expense.trip.trip_id }}
 
                             {% else %}
 
-                                <span class="badge bg-dark">
-
-                                    {{ trip.status }}
-
-                                </span>
+                                --
 
                             {% endif %}
 
                         </td>
 
+                        <td>
+
+                            <span class="badge bg-info">
+
+                                {{ expense.category }}
+
+                            </span>
+
+                        </td>
+
+                        <td>
+
+                            {{ expense.expense_date }}
+
+                        </td>
+
+                        <td>
+
+                            ₹ {{ expense.amount }}
+
+                        </td>
+
+                        <td>
+
+                            {{ expense.description|truncatechars:40 }}
+
+                        </td>
+
                         <td class="text-center">
 
-                            <a href="{% url 'trip_edit' trip.pk %}"
+                            <a href="{% url 'expense_edit' expense.pk %}"
 
                                class="btn btn-sm btn-outline-primary me-2">
 
@@ -244,7 +191,7 @@ Trips
 
                             </a>
 
-                            <a href="{% url 'trip_delete' trip.pk %}"
+                            <a href="{% url 'expense_delete' expense.pk %}"
 
                                class="btn btn-sm btn-outline-danger">
 
@@ -264,9 +211,9 @@ Trips
 
                             class="text-center py-5 text-muted">
 
-                            <i class="bi bi-map fs-1 d-block mb-3"></i>
+                            <i class="bi bi-cash-stack fs-1 d-block mb-3"></i>
 
-                            No Trips Found
+                            No Expense Records Found
 
                         </td>
 
@@ -283,7 +230,7 @@ Trips
     </div>
 
         <!-- ===================================== -->
-    <!-- TRIP SUMMARY -->
+    <!-- EXPENSE SUMMARY -->
     <!-- ===================================== -->
 
     <div class="row mt-4">
@@ -292,17 +239,17 @@ Trips
 
             <div class="summary-card text-center">
 
-                <i class="bi bi-truck text-primary fs-1 mb-3"></i>
+                <i class="bi bi-cash-stack text-primary fs-1 mb-3"></i>
 
                 <small>
 
-                    Total Trips
+                    Total Expenses
 
                 </small>
 
                 <h3>
 
-                    {{ trips|length }}
+                    {{ expenses|length }}
 
                 </h3>
 
@@ -314,17 +261,17 @@ Trips
 
             <div class="summary-card text-center">
 
-                <i class="bi bi-play-circle-fill text-info fs-1 mb-3"></i>
+                <i class="bi bi-currency-rupee text-success fs-1 mb-3"></i>
 
                 <small>
 
-                    Ongoing Trips
+                    Total Amount
 
                 </small>
 
                 <h3>
 
-                    {{ ongoing_trip_count|default:0 }}
+                    ₹ {{ total_amount|default:"0" }}
 
                 </h3>
 
@@ -336,17 +283,17 @@ Trips
 
             <div class="summary-card text-center">
 
-                <i class="bi bi-check-circle-fill text-success fs-1 mb-3"></i>
+                <i class="bi bi-receipt text-warning fs-1 mb-3"></i>
 
                 <small>
 
-                    Completed Trips
+                    Average Expense
 
                 </small>
 
                 <h3>
 
-                    {{ completed_trip_count|default:0 }}
+                    ₹ {{ average_amount|default:"0" }}
 
                 </h3>
 
@@ -358,17 +305,17 @@ Trips
 
             <div class="summary-card text-center">
 
-                <i class="bi bi-x-circle-fill text-danger fs-1 mb-3"></i>
+                <i class="bi bi-tags text-danger fs-1 mb-3"></i>
 
                 <small>
 
-                    Cancelled Trips
+                    Categories Used
 
                 </small>
 
                 <h3>
 
-                    {{ cancelled_trip_count|default:0 }}
+                    {{ category_count|default:"0" }}
 
                 </h3>
 
@@ -379,7 +326,7 @@ Trips
     </div>
 
     <!-- ===================================== -->
-    <!-- QUICK STATS -->
+    <!-- QUICK STATISTICS -->
     <!-- ===================================== -->
 
     <div class="dashboard-panel mt-4">
@@ -390,15 +337,15 @@ Trips
 
                 <h5>
 
-                    <i class="bi bi-speedometer2 text-primary"></i>
+                    <i class="bi bi-wallet2 text-primary"></i>
 
-                    Total Distance
+                    Highest Expense
 
                 </h5>
 
                 <h2 class="mt-3">
 
-                    {{ total_distance|default:"0" }} km
+                    ₹ {{ highest_expense|default:"0" }}
 
                 </h2>
 
@@ -408,15 +355,15 @@ Trips
 
                 <h5>
 
-                    <i class="bi bi-currency-rupee text-success"></i>
+                    <i class="bi bi-bar-chart-line text-success"></i>
 
-                    Total Revenue
+                    Average Spending
 
                 </h5>
 
                 <h2 class="mt-3">
 
-                    ₹ {{ total_trip_cost|default:"0" }}
+                    ₹ {{ average_amount|default:"0" }}
 
                 </h2>
 
@@ -428,13 +375,13 @@ Trips
 
                     <i class="bi bi-graph-up-arrow text-warning"></i>
 
-                    Completion Rate
+                    Expense Health
 
                 </h5>
 
                 <h2 class="mt-3">
 
-                    {{ completion_rate|default:"0" }}%
+                    Stable
 
                 </h2>
 
@@ -445,7 +392,7 @@ Trips
     </div>
 
         <!-- ===================================== -->
-    <!-- RECENT TRIPS -->
+    <!-- RECENT EXPENSES -->
     <!-- ===================================== -->
 
     <div class="row mt-4">
@@ -458,7 +405,7 @@ Trips
 
                     <h5 class="mb-0">
 
-                        Recent Trips
+                        Recent Expenses
 
                     </h5>
 
@@ -472,13 +419,13 @@ Trips
 
                             <tr>
 
-                                <th>Trip ID</th>
-
                                 <th>Vehicle</th>
 
-                                <th>Driver</th>
+                                <th>Category</th>
 
-                                <th>Status</th>
+                                <th>Date</th>
+
+                                <th>Amount</th>
 
                             </tr>
 
@@ -486,7 +433,7 @@ Trips
 
                         <tbody>
 
-                            {% for trip in trips|slice:":5" %}
+                            {% for expense in expenses|slice:":5" %}
 
                             <tr>
 
@@ -494,7 +441,7 @@ Trips
 
                                     <strong>
 
-                                        {{ trip.trip_id }}
+                                        {{ expense.vehicle.vehicle_number }}
 
                                     </strong>
 
@@ -502,59 +449,19 @@ Trips
 
                                 <td>
 
-                                    {{ trip.vehicle.vehicle_number }}
+                                    {{ expense.category }}
 
                                 </td>
 
                                 <td>
 
-                                    {{ trip.driver.full_name }}
+                                    {{ expense.expense_date }}
 
                                 </td>
 
                                 <td>
 
-                                    {% if trip.status == "COMPLETED" %}
-
-                                        <span class="badge bg-success">
-
-                                            Completed
-
-                                        </span>
-
-                                    {% elif trip.status == "ONGOING" %}
-
-                                        <span class="badge bg-primary">
-
-                                            Ongoing
-
-                                        </span>
-
-                                    {% elif trip.status == "SCHEDULED" %}
-
-                                        <span class="badge bg-secondary">
-
-                                            Scheduled
-
-                                        </span>
-
-                                    {% elif trip.status == "CANCELLED" %}
-
-                                        <span class="badge bg-danger">
-
-                                            Cancelled
-
-                                        </span>
-
-                                    {% else %}
-
-                                        <span class="badge bg-dark">
-
-                                            {{ trip.status }}
-
-                                        </span>
-
-                                    {% endif %}
+                                    ₹ {{ expense.amount }}
 
                                 </td>
 
@@ -568,7 +475,7 @@ Trips
 
                                     class="text-center text-muted py-4">
 
-                                    No Recent Trips
+                                    No Expense Records Available
 
                                 </td>
 
@@ -587,7 +494,7 @@ Trips
         </div>
 
         <!-- ===================================== -->
-        <!-- OPERATION TIPS -->
+        <!-- EXPENSE MANAGEMENT TIPS -->
         <!-- ===================================== -->
 
         <div class="col-lg-4">
@@ -598,7 +505,7 @@ Trips
 
                     <h5 class="mb-0">
 
-                        Operations Tips
+                        Expense Tips
 
                     </h5>
 
@@ -608,31 +515,31 @@ Trips
 
                     <li class="list-group-item">
 
-                        ✔ Verify vehicle before departure.
+                        ✔ Record every expense immediately.
 
                     </li>
 
                     <li class="list-group-item">
 
-                        ✔ Confirm driver assignment.
+                        ✔ Upload bills for future reference.
 
                     </li>
 
                     <li class="list-group-item">
 
-                        ✔ Track ongoing trips regularly.
+                        ✔ Categorize expenses correctly.
 
                     </li>
 
                     <li class="list-group-item">
 
-                        ✔ Update trip status promptly.
+                        ✔ Review monthly spending regularly.
 
                     </li>
 
                     <li class="list-group-item">
 
-                        ✔ Close completed trips daily.
+                        ✔ Track unexpected expenses separately.
 
                     </li>
 
@@ -652,7 +559,7 @@ Trips
 
         <small class="text-muted">
 
-            TransitOps Trip Management • {{ trips|length }} Trip(s)
+            TransitOps Expense Management • {{ expenses|length }} Record(s)
 
         </small>
 
@@ -668,9 +575,9 @@ Trips
 
 document.addEventListener("DOMContentLoaded", function () {
 
-    const searchInput = document.getElementById("tripSearch");
+    const searchInput = document.getElementById("expenseSearch");
 
-    const table = document.getElementById("tripTable");
+    const table = document.getElementById("expenseTable");
 
     if (!table || !searchInput) return;
 

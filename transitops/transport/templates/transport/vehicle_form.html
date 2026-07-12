@@ -1,0 +1,360 @@
+{% extends "transport/base.html" %}
+
+{% block title %}
+{{ title }} | TransitOps
+{% endblock %}
+
+{% block page_title %}
+{{ title }}
+{% endblock %}
+
+{% block content %}
+
+<div class="dashboard-container">
+
+    <!-- ===================================== -->
+    <!-- PAGE HEADER -->
+    <!-- ===================================== -->
+
+    <div class="dashboard-header">
+
+        <div>
+
+            <h2 class="mb-1">
+
+                {{ title }}
+
+            </h2>
+
+            <p class="text-muted mb-0">
+
+                Add or update vehicle information.
+
+            </p>
+
+        </div>
+
+        <div>
+
+            <a href="{% url 'fleet' %}"
+               class="btn btn-outline-secondary">
+
+                <i class="bi bi-arrow-left me-2"></i>
+
+                Back to Fleet
+
+            </a>
+
+        </div>
+
+    </div>
+
+    <!-- ===================================== -->
+    <!-- FORM -->
+    <!-- ===================================== -->
+
+    <div class="dashboard-panel">
+
+        <form method="POST"
+              enctype="multipart/form-data">
+
+            {% csrf_token %}
+
+            <div class="row">
+
+                <!-- Vehicle Number -->
+
+                <div class="col-md-6 mb-3">
+
+                    <label class="form-label">
+
+                        Vehicle Number
+
+                    </label>
+
+                    {{ form.vehicle_number }}
+
+                </div>
+
+                <!-- Vehicle Name -->
+
+                <div class="col-md-6 mb-3">
+
+                    <label class="form-label">
+
+                        Vehicle Name
+
+                    </label>
+
+                    {{ form.vehicle_name }}
+
+                </div>
+
+                <!-- Vehicle Type -->
+
+                <div class="col-md-6 mb-3">
+
+                    <label class="form-label">
+
+                        Vehicle Type
+
+                    </label>
+
+                    {{ form.vehicle_type }}
+
+                </div>
+
+                <!-- Brand -->
+
+                <div class="col-md-6 mb-3">
+
+                    <label class="form-label">
+
+                        Brand
+
+                    </label>
+
+                    {{ form.brand }}
+
+                </div>
+
+                <!-- Model -->
+
+                <div class="col-md-6 mb-3">
+
+                    <label class="form-label">
+
+                        Model
+
+                    </label>
+
+                    {{ form.model }}
+
+                </div>
+
+                <!-- Manufacturing Year -->
+
+                <div class="col-md-6 mb-3">
+
+                    <label class="form-label">
+
+                        Manufacturing Year
+
+                    </label>
+
+                    {{ form.manufacturing_year }}
+
+                </div>
+
+                                <!-- Fuel Type -->
+
+                <div class="col-md-6 mb-3">
+
+                    <label class="form-label">
+
+                        Fuel Type
+
+                    </label>
+
+                    {{ form.fuel_type }}
+
+                </div>
+
+                <!-- Seating Capacity -->
+
+                <div class="col-md-6 mb-3">
+
+                    <label class="form-label">
+
+                        Seating Capacity
+
+                    </label>
+
+                    {{ form.seating_capacity }}
+
+                </div>
+
+                <!-- Mileage -->
+
+                <div class="col-md-6 mb-3">
+
+                    <label class="form-label">
+
+                        Mileage (KM/L)
+
+                    </label>
+
+                    {{ form.mileage }}
+
+                </div>
+
+                <!-- Odometer -->
+
+                <div class="col-md-6 mb-3">
+
+                    <label class="form-label">
+
+                        Odometer Reading
+
+                    </label>
+
+                    {{ form.odometer }}
+
+                </div>
+
+                <!-- Insurance Expiry -->
+
+                <div class="col-md-6 mb-3">
+
+                    <label class="form-label">
+
+                        Insurance Expiry
+
+                    </label>
+
+                    {{ form.insurance_expiry }}
+
+                </div>
+
+                <!-- Pollution Expiry -->
+
+                <div class="col-md-6 mb-3">
+
+                    <label class="form-label">
+
+                        Pollution Expiry
+
+                    </label>
+
+                    {{ form.pollution_expiry }}
+
+                </div>
+
+                <!-- Registration Expiry -->
+
+                <div class="col-md-6 mb-3">
+
+                    <label class="form-label">
+
+                        Registration Expiry
+
+                    </label>
+
+                    {{ form.registration_expiry }}
+
+                </div>
+
+                <!-- Status -->
+
+                <div class="col-md-6 mb-3">
+
+                    <label class="form-label">
+
+                        Vehicle Status
+
+                    </label>
+
+                    {{ form.status }}
+
+                </div>
+
+                                <!-- Vehicle Image -->
+
+                <div class="col-md-6 mb-3">
+
+                    <label class="form-label">
+
+                        Vehicle Image
+
+                    </label>
+
+                    {{ form.image }}
+
+                    {% if vehicle and vehicle.image %}
+
+                        <div class="mt-3">
+
+                            <img
+                                src="{{ vehicle.image.url }}"
+                                alt="Vehicle Image"
+                                class="img-thumbnail"
+                                style="max-height:180px;">
+
+                        </div>
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+            <!-- ===================================== -->
+            <!-- FORM ERRORS -->
+            <!-- ===================================== -->
+
+            {% if form.errors %}
+
+                <div class="alert alert-danger mt-3">
+
+                    <strong>
+
+                        Please correct the following errors:
+
+                    </strong>
+
+                    {{ form.errors }}
+
+                </div>
+
+            {% endif %}
+
+            <!-- ===================================== -->
+            <!-- NOTES -->
+            <!-- ===================================== -->
+
+            <div class="alert alert-info mt-4">
+
+                <i class="bi bi-info-circle me-2"></i>
+
+                Please verify all vehicle details before saving.
+                Insurance, registration and pollution dates should
+                always be valid.
+
+            </div>
+
+                        <!-- ===================================== -->
+            <!-- FORM BUTTONS -->
+            <!-- ===================================== -->
+
+            <div class="mt-4 d-flex gap-2">
+
+                <button
+                    type="submit"
+                    class="btn btn-primary">
+
+                    <i class="bi bi-check-circle me-2"></i>
+
+                    Save Vehicle
+
+                </button>
+
+                <a
+                    href="{% url 'fleet' %}"
+                    class="btn btn-outline-secondary">
+
+                    <i class="bi bi-x-circle me-2"></i>
+
+                    Cancel
+
+                </a>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+{% endblock %}
+

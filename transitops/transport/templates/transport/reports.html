@@ -1,1 +1,759 @@
-<h1>reports</h1>
+<h1>reports</h1>{% extends "transport/base.html" %}
+
+{% block title %}
+Reports | TransitOps
+{% endblock %}
+
+{% block page_title %}
+Reports
+{% endblock %}
+
+{% block content %}
+
+<div class="dashboard-container">
+
+    <!-- ===================================== -->
+    <!-- PAGE HEADER -->
+    <!-- ===================================== -->
+
+    <div class="dashboard-header">
+
+        <div>
+
+            <h2 class="mb-1">
+
+                Reports Dashboard
+
+            </h2>
+
+            <p class="text-muted mb-0">
+
+                View business reports and operational summaries.
+
+            </p>
+
+        </div>
+
+        <div>
+
+            <button
+                class="btn btn-primary">
+
+                <i class="bi bi-download me-2"></i>
+
+                Export Report
+
+            </button>
+
+        </div>
+
+    </div>
+
+    <!-- ===================================== -->
+    <!-- REPORT SUMMARY -->
+    <!-- ===================================== -->
+
+    <div class="row">
+
+        <div class="col-lg-3 col-md-6 mb-4">
+
+            <div class="summary-card text-center">
+
+                <i class="bi bi-map text-primary fs-1 mb-3"></i>
+
+                <small>
+
+                    Total Trips
+
+                </small>
+
+                <h3>
+
+                    {{ trip_count|default:0 }}
+
+                </h3>
+
+            </div>
+
+        </div>
+
+        <div class="col-lg-3 col-md-6 mb-4">
+
+            <div class="summary-card text-center">
+
+                <i class="bi bi-currency-rupee text-success fs-1 mb-3"></i>
+
+                <small>
+
+                    Revenue
+
+                </small>
+
+                <h3>
+
+                    ₹ {{ revenue|default:0 }}
+
+                </h3>
+
+            </div>
+
+        </div>
+
+        <div class="col-lg-3 col-md-6 mb-4">
+
+            <div class="summary-card text-center">
+
+                <i class="bi bi-cash-stack text-danger fs-1 mb-3"></i>
+
+                <small>
+
+                    Expenses
+
+                </small>
+
+                <h3>
+
+                    ₹ {{ expenses|default:0 }}
+
+                </h3>
+
+            </div>
+
+        </div>
+
+        <div class="col-lg-3 col-md-6 mb-4">
+
+            <div class="summary-card text-center">
+
+                <i class="bi bi-graph-up-arrow text-warning fs-1 mb-3"></i>
+
+                <small>
+
+                    Net Profit
+
+                </small>
+
+                <h3>
+
+                    ₹ {{ profit|default:0 }}
+
+                </h3>
+
+            </div>
+
+        </div>
+
+    </div>
+
+        <!-- ===================================== -->
+    <!-- REPORT SECTIONS -->
+    <!-- ===================================== -->
+
+    <div class="row">
+
+        <!-- Fleet Report -->
+
+        <div class="col-lg-6 mb-4">
+
+            <div class="dashboard-panel">
+
+                <h5 class="mb-4">
+
+                    <i class="bi bi-truck text-primary me-2"></i>
+
+                    Fleet Report
+
+                </h5>
+
+                <div class="d-flex justify-content-between mb-3">
+
+                    <span>Total Vehicles</span>
+
+                    <strong>{{ vehicle_count|default:0 }}</strong>
+
+                </div>
+
+                <div class="d-flex justify-content-between mb-3">
+
+                    <span>Available Vehicles</span>
+
+                    <strong>{{ available_vehicles|default:0 }}</strong>
+
+                </div>
+
+                <div class="d-flex justify-content-between">
+
+                    <span>Vehicles in Maintenance</span>
+
+                    <strong>{{ maintenance_vehicles|default:0 }}</strong>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- Trip Report -->
+
+        <div class="col-lg-6 mb-4">
+
+            <div class="dashboard-panel">
+
+                <h5 class="mb-4">
+
+                    <i class="bi bi-map text-success me-2"></i>
+
+                    Trip Report
+
+                </h5>
+
+                <div class="d-flex justify-content-between mb-3">
+
+                    <span>Completed Trips</span>
+
+                    <strong>{{ completed_trips|default:0 }}</strong>
+
+                </div>
+
+                <div class="d-flex justify-content-between mb-3">
+
+                    <span>Ongoing Trips</span>
+
+                    <strong>{{ ongoing_trips|default:0 }}</strong>
+
+                </div>
+
+                <div class="d-flex justify-content-between">
+
+                    <span>Cancelled Trips</span>
+
+                    <strong>{{ cancelled_trips|default:0 }}</strong>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- Financial Report -->
+
+        <div class="col-lg-6 mb-4">
+
+            <div class="dashboard-panel">
+
+                <h5 class="mb-4">
+
+                    <i class="bi bi-cash-stack text-danger me-2"></i>
+
+                    Financial Report
+
+                </h5>
+
+                <div class="d-flex justify-content-between mb-3">
+
+                    <span>Trip Revenue</span>
+
+                    <strong>₹ {{ revenue|default:0 }}</strong>
+
+                </div>
+
+                <div class="d-flex justify-content-between mb-3">
+
+                    <span>Total Expenses</span>
+
+                    <strong>₹ {{ expenses|default:0 }}</strong>
+
+                </div>
+
+                <div class="d-flex justify-content-between">
+
+                    <span>Net Profit</span>
+
+                    <strong>₹ {{ profit|default:0 }}</strong>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- Maintenance Report -->
+
+        <div class="col-lg-6 mb-4">
+
+            <div class="dashboard-panel">
+
+                <h5 class="mb-4">
+
+                    <i class="bi bi-tools text-warning me-2"></i>
+
+                    Maintenance Report
+
+                </h5>
+
+                <div class="d-flex justify-content-between mb-3">
+
+                    <span>Completed Services</span>
+
+                    <strong>{{ completed_services|default:0 }}</strong>
+
+                </div>
+
+                <div class="d-flex justify-content-between mb-3">
+
+                    <span>Pending Services</span>
+
+                    <strong>{{ pending_services|default:0 }}</strong>
+
+                </div>
+
+                <div class="d-flex justify-content-between">
+
+                    <span>Total Maintenance Cost</span>
+
+                    <strong>₹ {{ maintenance_cost|default:0 }}</strong>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+        <!-- ===================================== -->
+    <!-- MONTHLY PERFORMANCE -->
+    <!-- ===================================== -->
+
+    <div class="row">
+
+        <div class="col-lg-6 mb-4">
+
+            <div class="dashboard-panel">
+
+                <h5 class="mb-4">
+
+                    <i class="bi bi-calendar3 text-primary me-2"></i>
+
+                    Monthly Performance
+
+                </h5>
+
+                <div class="d-flex justify-content-between mb-3">
+
+                    <span>Trips This Month</span>
+
+                    <strong>
+
+                        {{ monthly_trips|default:0 }}
+
+                    </strong>
+
+                </div>
+
+                <div class="d-flex justify-content-between mb-3">
+
+                    <span>Revenue This Month</span>
+
+                    <strong>
+
+                        ₹ {{ monthly_revenue|default:0 }}
+
+                    </strong>
+
+                </div>
+
+                <div class="d-flex justify-content-between">
+
+                    <span>Expenses This Month</span>
+
+                    <strong>
+
+                        ₹ {{ monthly_expenses|default:0 }}
+
+                    </strong>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-lg-6 mb-4">
+
+            <div class="dashboard-panel">
+
+                <h5 class="mb-4">
+
+                    <i class="bi bi-truck text-success me-2"></i>
+
+                    Vehicle Utilization
+
+                </h5>
+
+                <div class="d-flex justify-content-between mb-3">
+
+                    <span>Fleet Utilization</span>
+
+                    <strong>
+
+                        {{ fleet_utilization|default:0 }}%
+
+                    </strong>
+
+                </div>
+
+                <div class="progress mb-4">
+
+                    <div class="progress-bar bg-success"
+                         role="progressbar"
+                         style="width: {{ fleet_utilization|default:0 }}%;">
+
+                    </div>
+
+                </div>
+
+                <div class="d-flex justify-content-between">
+
+                    <span>Average Distance / Trip</span>
+
+                    <strong>
+
+                        {{ average_distance|default:0 }} km
+
+                    </strong>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- ===================================== -->
+    <!-- BUSINESS KPIs -->
+    <!-- ===================================== -->
+
+    <div class="dashboard-panel">
+
+        <h5 class="mb-4">
+
+            <i class="bi bi-speedometer2 text-warning me-2"></i>
+
+            Business KPI
+
+        </h5>
+
+        <div class="row text-center">
+
+            <div class="col-md-3">
+
+                <h3 class="text-primary">
+
+                    {{ completion_rate|default:0 }}%
+
+                </h3>
+
+                <small>
+
+                    Trip Completion
+
+                </small>
+
+            </div>
+
+            <div class="col-md-3">
+
+                <h3 class="text-success">
+
+                    {{ fuel_efficiency|default:0 }}
+
+                </h3>
+
+                <small>
+
+                    Avg Fuel Efficiency
+
+                </small>
+
+            </div>
+
+            <div class="col-md-3">
+
+                <h3 class="text-warning">
+
+                    {{ maintenance_completion|default:0 }}%
+
+                </h3>
+
+                <small>
+
+                    Maintenance Completion
+
+                </small>
+
+            </div>
+
+            <div class="col-md-3">
+
+                <h3 class="text-danger">
+
+                    {{ profit_margin|default:0 }}%
+
+                </h3>
+
+                <small>
+
+                    Profit Margin
+
+                </small>
+
+            </div>
+
+        </div>
+
+    </div>
+
+        <!-- ===================================== -->
+    <!-- RECENT REPORTS -->
+    <!-- ===================================== -->
+
+    <div class="row mt-4">
+
+        <div class="col-lg-8">
+
+            <div class="dashboard-panel">
+
+                <h5 class="mb-4">
+
+                    <i class="bi bi-file-earmark-bar-graph me-2"></i>
+
+                    Recent Reports
+
+                </h5>
+
+                <table class="table table-striped align-middle">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>Report</th>
+
+                            <th>Generated On</th>
+
+                            <th>Status</th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        {% for report in recent_reports|default_if_none:'' %}
+
+                        <tr>
+
+                            <td>
+
+                                {{ report.name }}
+
+                            </td>
+
+                            <td>
+
+                                {{ report.created_at }}
+
+                            </td>
+
+                            <td>
+
+                                <span class="badge bg-success">
+
+                                    Ready
+
+                                </span>
+
+                            </td>
+
+                        </tr>
+
+                        {% empty %}
+
+                        <tr>
+
+                            <td colspan="3"
+                                class="text-center text-muted">
+
+                                No Reports Available
+
+                            </td>
+
+                        </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+        <!-- ===================================== -->
+        <!-- MANAGEMENT RECOMMENDATIONS -->
+        <!-- ===================================== -->
+
+        <div class="col-lg-4">
+
+            <div class="dashboard-panel">
+
+                <h5 class="mb-4">
+
+                    <i class="bi bi-lightbulb-fill text-warning me-2"></i>
+
+                    Recommendations
+
+                </h5>
+
+                <ul class="list-group list-group-flush">
+
+                    <li class="list-group-item">
+
+                        ✔ Improve fleet utilization during peak hours.
+
+                    </li>
+
+                    <li class="list-group-item">
+
+                        ✔ Review high-value expenses every month.
+
+                    </li>
+
+                    <li class="list-group-item">
+
+                        ✔ Schedule preventive maintenance on time.
+
+                    </li>
+
+                    <li class="list-group-item">
+
+                        ✔ Track trip completion to improve profitability.
+
+                    </li>
+
+                    <li class="list-group-item">
+
+                        ✔ Monitor fuel efficiency across vehicles.
+
+                    </li>
+
+                </ul>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- ===================================== -->
+    <!-- EXECUTIVE SUMMARY -->
+    <!-- ===================================== -->
+
+    <div class="dashboard-panel mt-4">
+
+        <h5 class="mb-4">
+
+            <i class="bi bi-clipboard-data text-primary me-2"></i>
+
+            Executive Summary
+
+        </h5>
+
+        <div class="row">
+
+            <div class="col-md-6">
+
+                <div class="alert alert-success">
+
+                    <strong>Business Growth:</strong>
+
+                    Revenue and completed trips indicate healthy operational performance.
+
+                </div>
+
+            </div>
+
+            <div class="col-md-6">
+
+                <div class="alert alert-info">
+
+                    <strong>Fleet Performance:</strong>
+
+                    Continue monitoring vehicle utilization and fuel consumption.
+
+                </div>
+
+            </div>
+
+            <div class="col-md-6">
+
+                <div class="alert alert-warning">
+
+                    <strong>Maintenance:</strong>
+
+                    Resolve pending maintenance tasks to reduce downtime.
+
+                </div>
+
+            </div>
+
+            <div class="col-md-6">
+
+                <div class="alert alert-primary">
+
+                    <strong>Financial Health:</strong>
+
+                    Focus on reducing operational expenses to increase profit margin.
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+        <!-- ===================================== -->
+    <!-- PAGE FOOTER -->
+    <!-- ===================================== -->
+
+    <div class="text-center mt-4 mb-2">
+
+        <small class="text-muted">
+
+            TransitOps Reports Dashboard • Business Intelligence & Reporting
+
+        </small>
+
+    </div>
+
+</div>
+
+{% endblock %}
+
+{% block js %}
+
+<script>
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    console.log("Reports Dashboard Loaded");
+
+});
+
+</script>
+
+{% endblock %}

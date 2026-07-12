@@ -1,0 +1,499 @@
+{% extends "transport/base.html" %}
+
+{% block title %}
+{{ title }} | TransitOps
+{% endblock %}
+
+{% block page_title %}
+{{ title }}
+{% endblock %}
+
+{% block content %}
+
+<div class="dashboard-container">
+
+    <!-- ===================================== -->
+    <!-- PAGE HEADER -->
+    <!-- ===================================== -->
+
+    <div class="dashboard-header">
+
+        <div>
+
+            <h2 class="mb-1">
+
+                {{ title }}
+
+            </h2>
+
+            <p class="text-muted mb-0">
+
+                Create or update trip details.
+
+            </p>
+
+        </div>
+
+        <div>
+
+            <a href="{% url 'trips' %}"
+               class="btn btn-outline-secondary">
+
+                <i class="bi bi-arrow-left me-2"></i>
+
+                Back to Trips
+
+            </a>
+
+        </div>
+
+    </div>
+
+    <!-- ===================================== -->
+    <!-- TRIP FORM -->
+    <!-- ===================================== -->
+
+    <div class="dashboard-panel">
+
+        <form method="POST">
+
+            {% csrf_token %}
+
+            <div class="row">
+
+                <!-- Trip ID -->
+
+                <div class="col-md-6 mb-3">
+
+                    <label class="form-label">
+
+                        Trip ID
+
+                    </label>
+
+                    {{ form.trip_id }}
+
+                </div>
+
+                <!-- Vehicle -->
+
+                <div class="col-md-6 mb-3">
+
+                    <label class="form-label">
+
+                        Vehicle
+
+                    </label>
+
+                    {{ form.vehicle }}
+
+                </div>
+
+                <!-- Driver -->
+
+                <div class="col-md-6 mb-3">
+
+                    <label class="form-label">
+
+                        Driver
+
+                    </label>
+
+                    {{ form.driver }}
+
+                </div>
+
+                <!-- Status -->
+
+                <div class="col-md-6 mb-3">
+
+                    <label class="form-label">
+
+                        Trip Status
+
+                    </label>
+
+                    {{ form.status }}
+
+                </div>
+
+                <!-- Source -->
+
+                <div class="col-md-6 mb-3">
+
+                    <label class="form-label">
+
+                        Source
+
+                    </label>
+
+                    {{ form.source }}
+
+                </div>
+
+                <!-- Destination -->
+
+                <div class="col-md-6 mb-3">
+
+                    <label class="form-label">
+
+                        Destination
+
+                    </label>
+
+                    {{ form.destination }}
+
+                </div>
+
+                                <!-- Start Date -->
+
+                <div class="col-md-6 mb-3">
+
+                    <label class="form-label">
+
+                        Start Date
+
+                    </label>
+
+                    {{ form.start_date }}
+
+                </div>
+
+                <!-- Start Time -->
+
+                <div class="col-md-6 mb-3">
+
+                    <label class="form-label">
+
+                        Start Time
+
+                    </label>
+
+                    {{ form.start_time }}
+
+                </div>
+
+                <!-- End Date -->
+
+                <div class="col-md-6 mb-3">
+
+                    <label class="form-label">
+
+                        End Date
+
+                    </label>
+
+                    {{ form.end_date }}
+
+                </div>
+
+                <!-- End Time -->
+
+                <div class="col-md-6 mb-3">
+
+                    <label class="form-label">
+
+                        End Time
+
+                    </label>
+
+                    {{ form.end_time }}
+
+                </div>
+
+                <!-- Distance -->
+
+                <div class="col-md-6 mb-3">
+
+                    <label class="form-label">
+
+                        Distance (KM)
+
+                    </label>
+
+                    {{ form.distance }}
+
+                </div>
+
+                <!-- Estimated Duration -->
+
+                <div class="col-md-6 mb-3">
+
+                    <label class="form-label">
+
+                        Estimated Duration
+
+                    </label>
+
+                    {{ form.estimated_duration }}
+
+                </div>
+
+                <!-- Actual Duration -->
+
+                <div class="col-md-6 mb-3">
+
+                    <label class="form-label">
+
+                        Actual Duration
+
+                    </label>
+
+                    {{ form.actual_duration }}
+
+                </div>
+
+                <!-- Trip Cost -->
+
+                <div class="col-md-6 mb-3">
+
+                    <label class="form-label">
+
+                        Trip Cost
+
+                    </label>
+
+                    {{ form.trip_cost }}
+
+                </div>
+
+                                <!-- Start Date -->
+
+                <div class="col-md-6 mb-3">
+
+                    <label class="form-label">
+
+                        Start Date
+
+                    </label>
+
+                    {{ form.start_date }}
+
+                </div>
+
+                <!-- Start Time -->
+
+                <div class="col-md-6 mb-3">
+
+                    <label class="form-label">
+
+                        Start Time
+
+                    </label>
+
+                    {{ form.start_time }}
+
+                </div>
+
+                <!-- End Date -->
+
+                <div class="col-md-6 mb-3">
+
+                    <label class="form-label">
+
+                        End Date
+
+                    </label>
+
+                    {{ form.end_date }}
+
+                </div>
+
+                <!-- End Time -->
+
+                <div class="col-md-6 mb-3">
+
+                    <label class="form-label">
+
+                        End Time
+
+                    </label>
+
+                    {{ form.end_time }}
+
+                </div>
+
+                <!-- Distance -->
+
+                <div class="col-md-6 mb-3">
+
+                    <label class="form-label">
+
+                        Distance (KM)
+
+                    </label>
+
+                    {{ form.distance }}
+
+                </div>
+
+                <!-- Estimated Duration -->
+
+                <div class="col-md-6 mb-3">
+
+                    <label class="form-label">
+
+                        Estimated Duration
+
+                    </label>
+
+                    {{ form.estimated_duration }}
+
+                </div>
+
+                <!-- Actual Duration -->
+
+                <div class="col-md-6 mb-3">
+
+                    <label class="form-label">
+
+                        Actual Duration
+
+                    </label>
+
+                    {{ form.actual_duration }}
+
+                </div>
+
+                <!-- Trip Cost -->
+
+                <div class="col-md-6 mb-3">
+
+                    <label class="form-label">
+
+                        Trip Cost
+
+                    </label>
+
+                    {{ form.trip_cost }}
+
+                </div>
+
+                                <!-- Cargo Details -->
+
+                <div class="col-12 mb-3">
+
+                    <label class="form-label">
+
+                        Cargo Details
+
+                    </label>
+
+                    {{ form.cargo_details }}
+
+                </div>
+
+                <!-- Customer Name -->
+
+                <div class="col-md-6 mb-3">
+
+                    <label class="form-label">
+
+                        Customer Name
+
+                    </label>
+
+                    {{ form.customer_name }}
+
+                </div>
+
+                <!-- Customer Phone -->
+
+                <div class="col-md-6 mb-3">
+
+                    <label class="form-label">
+
+                        Customer Phone
+
+                    </label>
+
+                    {{ form.customer_phone }}
+
+                </div>
+
+                <!-- Remarks -->
+
+                <div class="col-12 mb-3">
+
+                    <label class="form-label">
+
+                        Remarks
+
+                    </label>
+
+                    {{ form.remarks }}
+
+                </div>
+
+            </div>
+
+            <!-- ===================================== -->
+            <!-- FORM ERRORS -->
+            <!-- ===================================== -->
+
+            {% if form.errors %}
+
+                <div class="alert alert-danger mt-3">
+
+                    <strong>
+
+                        Please correct the following errors:
+
+                    </strong>
+
+                    {{ form.errors }}
+
+                </div>
+
+            {% endif %}
+
+            <!-- ===================================== -->
+            <!-- INFORMATION -->
+            <!-- ===================================== -->
+
+            <div class="alert alert-info mt-4">
+
+                <i class="bi bi-info-circle me-2"></i>
+
+                Before saving the trip, verify the assigned vehicle,
+                driver, route, dates, timings and trip cost. Keeping
+                accurate trip records helps improve fleet tracking and
+                reporting.
+
+            </div>
+
+                        <!-- ===================================== -->
+            <!-- FORM BUTTONS -->
+            <!-- ===================================== -->
+
+            <div class="mt-4 d-flex gap-2">
+
+                <button
+                    type="submit"
+                    class="btn btn-primary">
+
+                    <i class="bi bi-check-circle me-2"></i>
+
+                    Save Trip
+
+                </button>
+
+                <a
+                    href="{% url 'trips' %}"
+                    class="btn btn-outline-secondary">
+
+                    <i class="bi bi-x-circle me-2"></i>
+
+                    Cancel
+
+                </a>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+{% endblock %}

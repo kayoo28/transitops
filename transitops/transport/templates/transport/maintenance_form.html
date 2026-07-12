@@ -1,0 +1,290 @@
+{% extends "transport/base.html" %}
+
+{% block title %}
+{{ title }} | TransitOps
+{% endblock %}
+
+{% block page_title %}
+{{ title }}
+{% endblock %}
+
+{% block content %}
+
+<div class="dashboard-container">
+
+    <!-- ===================================== -->
+    <!-- PAGE HEADER -->
+    <!-- ===================================== -->
+
+    <div class="dashboard-header">
+
+        <div>
+
+            <h2 class="mb-1">
+
+                {{ title }}
+
+            </h2>
+
+            <p class="text-muted mb-0">
+
+                Add or update maintenance details.
+
+            </p>
+
+        </div>
+
+        <div>
+
+            <a href="{% url 'maintenance' %}"
+               class="btn btn-outline-secondary">
+
+                <i class="bi bi-arrow-left me-2"></i>
+
+                Back to Maintenance
+
+            </a>
+
+        </div>
+
+    </div>
+
+    <!-- ===================================== -->
+    <!-- MAINTENANCE FORM -->
+    <!-- ===================================== -->
+
+    <div class="dashboard-panel">
+
+        <form method="POST">
+
+            {% csrf_token %}
+
+            <div class="row">
+
+                <!-- Vehicle -->
+
+                <div class="col-md-6 mb-3">
+
+                    <label class="form-label">
+
+                        Vehicle
+
+                    </label>
+
+                    {{ form.vehicle }}
+
+                </div>
+
+                <!-- Title -->
+
+                <div class="col-md-6 mb-3">
+
+                    <label class="form-label">
+
+                        Maintenance Title
+
+                    </label>
+
+                    {{ form.title }}
+
+                </div>
+
+                <!-- Service Date -->
+
+                <div class="col-md-6 mb-3">
+
+                    <label class="form-label">
+
+                        Service Date
+
+                    </label>
+
+                    {{ form.service_date }}
+
+                </div>
+
+                <!-- Service Center -->
+
+                <div class="col-md-6 mb-3">
+
+                    <label class="form-label">
+
+                        Service Center
+
+                    </label>
+
+                    {{ form.service_center }}
+
+                </div>
+
+                <!-- Mechanic Name -->
+
+                <div class="col-md-6 mb-3">
+
+                    <label class="form-label">
+
+                        Mechanic Name
+
+                    </label>
+
+                    {{ form.mechanic_name }}
+
+                </div>
+
+                <!-- Status -->
+
+                <div class="col-md-6 mb-3">
+
+                    <label class="form-label">
+
+                        Status
+
+                    </label>
+
+                    {{ form.status }}
+
+                </div>
+
+                                <!-- Estimated Cost -->
+
+                <div class="col-md-6 mb-3">
+
+                    <label class="form-label">
+
+                        Estimated Cost
+
+                    </label>
+
+                    {{ form.estimated_cost }}
+
+                </div>
+
+                <!-- Actual Cost -->
+
+                <div class="col-md-6 mb-3">
+
+                    <label class="form-label">
+
+                        Actual Cost
+
+                    </label>
+
+                    {{ form.actual_cost }}
+
+                </div>
+
+                <!-- Odometer Reading -->
+
+                <div class="col-md-6 mb-3">
+
+                    <label class="form-label">
+
+                        Odometer Reading
+
+                    </label>
+
+                    {{ form.odometer_reading }}
+
+                </div>
+
+                <!-- Next Service Date -->
+
+                <div class="col-md-6 mb-3">
+
+                    <label class="form-label">
+
+                        Next Service Date
+
+                    </label>
+
+                    {{ form.next_service_date }}
+
+                </div>
+
+                <!-- Description -->
+
+                <div class="col-12 mb-3">
+
+                    <label class="form-label">
+
+                        Description
+
+                    </label>
+
+                    {{ form.description }}
+
+                </div>
+
+                            </div>
+
+            <!-- ===================================== -->
+            <!-- FORM ERRORS -->
+            <!-- ===================================== -->
+
+            {% if form.errors %}
+
+                <div class="alert alert-danger mt-3">
+
+                    <strong>
+
+                        Please correct the following errors:
+
+                    </strong>
+
+                    {{ form.errors }}
+
+                </div>
+
+            {% endif %}
+
+            <!-- ===================================== -->
+            <!-- INFORMATION -->
+            <!-- ===================================== -->
+
+            <div class="alert alert-info mt-4">
+
+                <i class="bi bi-info-circle me-2"></i>
+
+                Before saving this maintenance record, verify the
+                service date, costs, mechanic details and next
+                service schedule. Maintaining accurate service
+                history helps improve vehicle reliability and
+                reduces unexpected breakdowns.
+
+            </div>
+
+                        <!-- ===================================== -->
+            <!-- FORM BUTTONS -->
+            <!-- ===================================== -->
+
+            <div class="mt-4 d-flex gap-2">
+
+                <button
+                    type="submit"
+                    class="btn btn-primary">
+
+                    <i class="bi bi-check-circle me-2"></i>
+
+                    Save Maintenance
+
+                </button>
+
+                <a
+                    href="{% url 'maintenance' %}"
+                    class="btn btn-outline-secondary">
+
+                    <i class="bi bi-x-circle me-2"></i>
+
+                    Cancel
+
+                </a>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+{% endblock %}

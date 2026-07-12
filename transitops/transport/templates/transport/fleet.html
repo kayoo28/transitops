@@ -1,0 +1,710 @@
+{% extends "transport/base.html" %}
+
+{% block title %}
+Fleet Management | TransitOps
+{% endblock %}
+
+{% block page_title %}
+Fleet Management
+{% endblock %}
+
+{% block content %}
+
+<div class="dashboard-container">
+
+    <!-- ===================================== -->
+    <!-- PAGE HEADER -->
+    <!-- ===================================== -->
+
+    <div class="dashboard-header">
+
+        <div>
+
+            <h2 class="mb-1">
+
+                Fleet Management
+
+            </h2>
+
+            <p class="text-muted mb-0">
+
+                Manage all registered vehicles.
+
+            </p>
+
+        </div>
+
+        <div>
+
+            <a href="{% url 'vehicle_add' %}"
+               class="btn btn-primary">
+
+                <i class="bi bi-plus-circle me-2"></i>
+
+                Add Vehicle
+
+            </a>
+
+        </div>
+
+    </div>
+
+    <!-- ===================================== -->
+    <!-- SEARCH BAR -->
+    <!-- ===================================== -->
+
+    <div class="dashboard-panel">
+
+        <div class="row">
+
+            <div class="col-md-6">
+
+                <input
+                    type="text"
+                    id="vehicleSearch"
+                    class="form-control"
+                    placeholder="Search by vehicle number, model or owner...">
+
+            </div>
+
+            <div class="col-md-3">
+
+                <select
+                    class="form-select"
+                    id="statusFilter">
+
+                    <option value="">
+
+                        All Status
+
+                    </option>
+
+                    <option value="AVAILABLE">
+
+                        Available
+
+                    </option>
+
+                    <option value="ON_TRIP">
+
+                        On Trip
+
+                    </option>
+
+                    <option value="MAINTENANCE">
+
+                        Maintenance
+
+                    </option>
+
+                </select>
+
+            </div>
+
+            <div class="col-md-3 text-end">
+
+                <span class="badge bg-primary">
+
+                    Total Vehicles :
+                    {{ vehicles|length }}
+
+                </span>
+
+            </div>
+
+        </div>
+
+    </div>
+
+        <!-- ===================================== -->
+    <!-- VEHICLE TABLE -->
+    <!-- ===================================== -->
+
+    <div class="dashboard-panel">
+
+        <div class="table-responsive">
+
+            <table class="table table-hover align-middle" id="vehicleTable">
+
+                <thead>
+
+                    <tr>
+
+                        <th>#</th>
+
+                        <th>Vehicle No.</th>
+
+                        <th>Type</th>
+
+                        <th>Model</th>
+
+                        <th>Capacity</th>
+
+                        <th>Status</th>
+
+                        <th class="text-center">
+
+                            Actions
+
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    {% for vehicle in vehicles %}
+
+                    <tr>
+
+                        <td>
+
+                            {{ forloop.counter }}
+
+                        </td>
+
+                        <td>
+
+                            <strong>
+
+                                {{ vehicle.vehicle_number }}
+
+                            </strong>
+
+                        </td>
+
+                        <td>
+
+                            {{ vehicle.vehicle_type }}
+
+                        </td>
+
+                        <td>
+
+                            {{ vehicle.model }}
+
+                        </td>
+
+                        <td>
+
+                            {{ vehicle.capacity }}
+
+                        </td>
+
+                        <td>
+
+                            {% if vehicle.status == "AVAILABLE" %}
+
+                                <span class="badge bg-success">
+
+                                    Available
+
+                                </span>
+
+                            {% elif vehicle.status == "ON_TRIP" %}
+
+                                <span class="badge bg-primary">
+
+                                    On Trip
+
+                                </span>
+
+                            {% elif vehicle.status == "MAINTENANCE" %}
+
+                                <span class="badge bg-warning text-dark">
+
+                                    Maintenance
+
+                                </span>
+
+                            {% else %}
+
+                                <span class="badge bg-secondary">
+
+                                    {{ vehicle.status }}
+
+                                </span>
+
+                            {% endif %}
+
+                        </td>
+
+                        <td class="text-center">
+
+                            <a href="{% url 'vehicle_edit' vehicle.pk %}"
+
+                               class="btn btn-sm btn-outline-primary me-2">
+
+                                <i class="bi bi-pencil-square"></i>
+
+                            </a>
+
+                            <a href="{% url 'vehicle_delete' vehicle.pk %}"
+
+                               class="btn btn-sm btn-outline-danger">
+
+                                <i class="bi bi-trash"></i>
+
+                            </a>
+
+                        </td>
+
+                    </tr>
+
+                    {% empty %}
+
+                    <tr>
+
+                        <td colspan="7"
+
+                            class="text-center py-5 text-muted">
+
+                            <i class="bi bi-truck fs-1 d-block mb-3"></i>
+
+                            No Vehicles Found
+
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+        <!-- ===================================== -->
+    <!-- FLEET SUMMARY -->
+    <!-- ===================================== -->
+
+    <div class="row mt-4">
+
+        <div class="col-lg-3 col-md-6">
+
+            <div class="summary-card text-center">
+
+                <i class="bi bi-truck text-primary fs-1 mb-3"></i>
+
+                <small>
+
+                    Total Vehicles
+
+                </small>
+
+                <h3>
+
+                    {{ vehicles|length }}
+
+                </h3>
+
+            </div>
+
+        </div>
+
+        <div class="col-lg-3 col-md-6">
+
+            <div class="summary-card text-center">
+
+                <i class="bi bi-check-circle-fill text-success fs-1 mb-3"></i>
+
+                <small>
+
+                    Available
+
+                </small>
+
+                <h3>
+
+                    {{ available_count|default:0 }}
+
+                </h3>
+
+            </div>
+
+        </div>
+
+        <div class="col-lg-3 col-md-6">
+
+            <div class="summary-card text-center">
+
+                <i class="bi bi-geo-alt-fill text-warning fs-1 mb-3"></i>
+
+                <small>
+
+                    On Trip
+
+                </small>
+
+                <h3>
+
+                    {{ on_trip_count|default:0 }}
+
+                </h3>
+
+            </div>
+
+        </div>
+
+        <div class="col-lg-3 col-md-6">
+
+            <div class="summary-card text-center">
+
+                <i class="bi bi-tools text-danger fs-1 mb-3"></i>
+
+                <small>
+
+                    Maintenance
+
+                </small>
+
+                <h3>
+
+                    {{ maintenance_count|default:0 }}
+
+                </h3>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- ===================================== -->
+    <!-- QUICK INFO -->
+    <!-- ===================================== -->
+
+    <div class="dashboard-panel mt-4">
+
+        <div class="row">
+
+            <div class="col-md-4 text-center">
+
+                <h5>
+
+                    <i class="bi bi-speedometer2 text-primary"></i>
+
+                    Fleet Health
+
+                </h5>
+
+                <h2 class="mt-3 text-success">
+
+                    96%
+
+                </h2>
+
+            </div>
+
+            <div class="col-md-4 text-center">
+
+                <h5>
+
+                    <i class="bi bi-fuel-pump text-warning"></i>
+
+                    Avg Fuel Usage
+
+                </h5>
+
+                <h2 class="mt-3">
+
+                    15.8 km/L
+
+                </h2>
+
+            </div>
+
+            <div class="col-md-4 text-center">
+
+                <h5>
+
+                    <i class="bi bi-graph-up-arrow text-success"></i>
+
+                    Fleet Efficiency
+
+                </h5>
+
+                <h2 class="mt-3">
+
+                    92%
+
+                </h2>
+
+            </div>
+
+        </div>
+
+    </div>
+
+        <!-- ===================================== -->
+    <!-- RECENT VEHICLE ACTIVITY -->
+    <!-- ===================================== -->
+
+    <div class="row mt-4">
+
+        <div class="col-lg-8">
+
+            <div class="dashboard-panel">
+
+                <div class="panel-header">
+
+                    <h5 class="mb-0">
+
+                        Recent Vehicle Activity
+
+                    </h5>
+
+                </div>
+
+                <div class="table-responsive">
+
+                    <table class="table table-striped align-middle">
+
+                        <thead>
+
+                            <tr>
+
+                                <th>Vehicle</th>
+
+                                <th>Status</th>
+
+                                <th>Updated</th>
+
+                            </tr>
+
+                        </thead>
+
+                        <tbody>
+
+                            {% for vehicle in vehicles|slice:":5" %}
+
+                            <tr>
+
+                                <td>
+
+                                    <strong>
+
+                                        {{ vehicle.vehicle_number }}
+
+                                    </strong>
+
+                                </td>
+
+                                <td>
+
+                                    {% if vehicle.status == "AVAILABLE" %}
+
+                                        <span class="badge bg-success">
+
+                                            Available
+
+                                        </span>
+
+                                    {% elif vehicle.status == "ON_TRIP" %}
+
+                                        <span class="badge bg-primary">
+
+                                            On Trip
+
+                                        </span>
+
+                                    {% elif vehicle.status == "MAINTENANCE" %}
+
+                                        <span class="badge bg-warning text-dark">
+
+                                            Maintenance
+
+                                        </span>
+
+                                    {% else %}
+
+                                        <span class="badge bg-secondary">
+
+                                            {{ vehicle.status }}
+
+                                        </span>
+
+                                    {% endif %}
+
+                                </td>
+
+                                <td>
+
+                                    {{ vehicle.updated_at|date:"d M Y" }}
+
+                                </td>
+
+                            </tr>
+
+                            {% empty %}
+
+                            <tr>
+
+                                <td colspan="3"
+
+                                    class="text-center text-muted py-4">
+
+                                    No Activity Found
+
+                                </td>
+
+                            </tr>
+
+                            {% endfor %}
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- Fleet Tips -->
+
+        <div class="col-lg-4">
+
+            <div class="dashboard-panel">
+
+                <div class="panel-header">
+
+                    <h5 class="mb-0">
+
+                        Fleet Tips
+
+                    </h5>
+
+                </div>
+
+                <ul class="list-group list-group-flush">
+
+                    <li class="list-group-item">
+
+                        ✔ Check tyre pressure weekly.
+
+                    </li>
+
+                    <li class="list-group-item">
+
+                        ✔ Schedule maintenance before due dates.
+
+                    </li>
+
+                    <li class="list-group-item">
+
+                        ✔ Monitor fuel consumption regularly.
+
+                    </li>
+
+                    <li class="list-group-item">
+
+                        ✔ Keep vehicle documents updated.
+
+                    </li>
+
+                    <li class="list-group-item">
+
+                        ✔ Review inactive vehicles monthly.
+
+                    </li>
+
+                </ul>
+
+            </div>
+
+        </div>
+
+    </div>
+
+        <!-- ===================================== -->
+    <!-- PAGE FOOTER -->
+    <!-- ===================================== -->
+
+    <div class="text-center mt-4 mb-2">
+
+        <small class="text-muted">
+
+            TransitOps Fleet Management • {{ vehicles|length }} Vehicle(s)
+
+        </small>
+
+    </div>
+
+</div>
+
+{% endblock %}
+
+{% block js %}
+
+<script>
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    const searchInput = document.getElementById("vehicleSearch");
+
+    const statusFilter = document.getElementById("statusFilter");
+
+    const table = document.getElementById("vehicleTable");
+
+    if (!table) return;
+
+    const rows = table.querySelectorAll("tbody tr");
+
+    function filterVehicles() {
+
+        const search = searchInput.value.toLowerCase();
+
+        const status = statusFilter.value.toLowerCase();
+
+        rows.forEach(function(row){
+
+            const text = row.innerText.toLowerCase();
+
+            const statusText = row.cells[5]
+                ? row.cells[5].innerText.toLowerCase()
+                : "";
+
+            const matchSearch = text.includes(search);
+
+            const matchStatus =
+                status === "" ||
+                statusText.includes(status.replace("_"," "));
+
+            row.style.display =
+                (matchSearch && matchStatus)
+                ? ""
+                : "none";
+
+        });
+
+    }
+
+    if(searchInput){
+
+        searchInput.addEventListener(
+            "keyup",
+            filterVehicles
+        );
+
+    }
+
+    if(statusFilter){
+
+        statusFilter.addEventListener(
+            "change",
+            filterVehicles
+        );
+
+    }
+
+});
+
+</script>
+
+{% endblock %}
