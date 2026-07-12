@@ -2,4 +2,6 @@ from django.apps import AppConfig
 
 
 class TransportConfig(AppConfig):
-    name = 'transport'
+    default_auto_field = "django.db.models.BigAutoField"
+    name = "transport"
+    verbose_name = "TransitOps"

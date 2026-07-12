@@ -3,32 +3,56 @@
 <html lang="en">
 
 <head>
+
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
 
     <title>
+
         {% block title %}
+
         TransitOps
+
         {% endblock %}
+
     </title>
 
+    <!-- ============================= -->
     <!-- Google Font -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <!-- ============================= -->
+
+    <link rel="preconnect"
+          href="https://fonts.googleapis.com">
+
+    <link rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossorigin>
 
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
-        rel="stylesheet">
+          rel="stylesheet">
 
+    <!-- ============================= -->
     <!-- Bootstrap -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- ============================= -->
 
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+
+    <!-- ============================= -->
     <!-- Bootstrap Icons -->
-    <link rel="stylesheet"
-        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <!-- ============================= -->
 
-    <!-- Global CSS -->
     <link rel="stylesheet"
-        href="{% static 'transport/css/style.css' %}">
+          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <!-- ============================= -->
+    <!-- Custom CSS -->
+    <!-- ============================= -->
+
+    <link rel="stylesheet"
+          href="{% static 'transport/css/style.css' %}">
 
     {% block css %}
 
@@ -38,19 +62,505 @@
 
 <body>
 
-{% block body %}
+<div class="app-wrapper">
 
-{% endblock %}
+    <!-- ================================= -->
+    <!-- Sidebar -->
+    <!-- ================================= -->
+
+    <aside class="sidebar">
+
+        <div class="sidebar-logo">
+
+            <i class="bi bi-truck"></i>
+
+            <span>TransitOps</span>
+
+        </div>
+
+        <ul class="sidebar-menu">
+
+            <li>
+
+                <a href="{% url 'dashboard' %}">
+
+                    <i class="bi bi-speedometer2"></i>
+
+                    Dashboard
+
+                </a>
+
+            </li>
+
+            <li>
+
+                <a href="{% url 'fleet' %}">
+
+                    <i class="bi bi-truck"></i>
+
+                    Fleet
+
+                </a>
+
+            </li>
+
+            <li>
+
+                <a href="{% url 'drivers' %}">
+
+                    <i class="bi bi-person-badge"></i>
+
+                    Drivers
+
+                </a>
+
+            </li>
+
+            <li>
+
+                <a href="{% url 'trips' %}">
+
+                    <i class="bi bi-map"></i>
+
+                    Trips
+
+                </a>
+
+            </li>
+
+            <li>
+
+                <a href="{% url 'fuel' %}">
+
+                    <i class="bi bi-fuel-pump"></i>
+
+                    Fuel
+
+                </a>
+
+            </li>
+
+            <li>
+
+                <a href="{% url 'maintenance' %}">
+
+                    <i class="bi bi-tools"></i>
+
+                    Maintenance
+
+                </a>
+
+            </li>
+
+            <li>
+
+                <a href="{% url 'expenses' %}">
+
+                    <i class="bi bi-cash-stack"></i>
+
+                    Expenses
+
+                </a>
+
+            </li>
+
+            <li>
+
+                <a href="{% url 'analytics' %}">
+
+                    <i class="bi bi-bar-chart-line"></i>
+
+                    Analytics
+
+                </a>
+
+            </li>
+
+            <li>
+
+                <a href="{% url 'reports' %}">
+
+                    <i class="bi bi-file-earmark-bar-graph"></i>
+
+                    Reports
+
+                </a>
+
+            </li>
+
+            <li>
+
+                <a href="{% url 'settings' %}">
+
+                    <i class="bi bi-gear"></i>
+
+                    Settings
+
+                </a>
+
+            </li>
+
+            <li>
+
+                <a href="{% url 'logout' %}">
+
+                    <i class="bi bi-box-arrow-right"></i>
+
+                    Logout
+
+                </a>
+
+            </li>
+
+        </ul>
+
+    </aside>
+
+    <!-- ================================= -->
+    <!-- Main Content -->
+    <!-- ================================= -->
+
+    <main class="main-content">
+
+        <!-- ================================= -->
+<!-- Top Navbar -->
+<!-- ================================= -->
+
+<header class="top-navbar">
+
+    <div class="navbar-left">
+
+        <button class="menu-toggle"
+                id="menuToggle">
+
+            <i class="bi bi-list"></i>
+
+        </button>
+
+        <div>
+
+            <h3 class="page-title">
+
+                {% block page_title %}
+
+                Dashboard
+
+                {% endblock %}
+
+            </h3>
+
+            <small class="text-muted">
+
+                Fleet Management Dashboard
+
+            </small>
+
+        </div>
+
+    </div>
+
+    <div class="navbar-right">
+
+        <!-- Search -->
+
+        <div class="search-box">
+
+            <i class="bi bi-search"></i>
+
+            <input type="text"
+                   placeholder="Search anything...">
+
+        </div>
+
+        <!-- Notification -->
+
+        <button class="icon-btn">
+
+            <i class="bi bi-bell"></i>
+
+            <span class="notification-badge">
+
+                3
+
+            </span>
+
+        </button>
+
+        <!-- User -->
+
+        <div class="user-profile">
+
+            <div class="avatar">
+
+                {{ request.user.username|first|upper }}
+
+            </div>
+
+            <div class="user-info">
+
+                <strong>
+
+                    {{ request.user.username }}
+
+                </strong>
+
+                <small>
+
+                    Administrator
+
+                </small>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</header>
+
+<!-- ================================= -->
+<!-- Django Messages -->
+<!-- ================================= -->
+
+{% if messages %}
+
+    {% for message in messages %}
+
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show mt-3">
+
+            {{ message }}
+
+            <button type="button"
+                    class="btn-close"
+                    data-bs-dismiss="alert">
+            </button>
+
+        </div>
+
+    {% endfor %}
+
+{% endif %}
+
+<!-- ================================= -->
+<!-- Main Page Content -->
+<!-- ================================= -->
+
+<div class="content-wrapper">
+
+    {% block content %}
+
+    {% endblock %}
+
+</div>
+
+<!-- ================================= -->
+<!-- Footer -->
+<!-- ================================= -->
+
+<footer class="footer">
+
+    <div class="footer-left">
+
+        © {% now "Y" %} TransitOps. All Rights Reserved.
+
+    </div>
+
+    <div class="footer-right">
+
+        Developed with ❤️ using Django & Bootstrap
+
+    </div>
+
+</footer>
+
+</main>
+
+</div>
+
+<!-- ================================= -->
+<!-- Scroll To Top -->
+<!-- ================================= -->
+
+<button id="scrollTopBtn"
+        class="scroll-top-btn">
+
+    <i class="bi bi-arrow-up"></i>
+
+</button>
+
+<!-- ================================= -->
+<!-- Loading Overlay -->
+<!-- ================================= -->
+
+<div id="loadingOverlay"
+     class="loading-overlay">
+
+    <div class="spinner-border text-light"
+         role="status">
+
+        <span class="visually-hidden">
+
+            Loading...
+
+        </span>
+
+    </div>
+
+</div>
+
+<!-- ================================= -->
+<!-- Global Modal -->
+<!-- ================================= -->
+
+<div class="modal fade"
+     id="globalModal"
+     tabindex="-1"
+     aria-hidden="true">
+
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+
+        <div class="modal-content">
+
+            <div class="modal-header">
+
+                <h5 class="modal-title">
+
+                    TransitOps
+
+                </h5>
+
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal">
+
+                </button>
+
+            </div>
+
+            <div class="modal-body">
+
+                {% block modal %}
+
+                {% endblock %}
+
+            </div>
+
+            <div class="modal-footer">
+
+                <button type="button"
+                        class="btn btn-secondary"
+                        data-bs-dismiss="modal">
+
+                    Close
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- ================================= -->
+<!-- Bootstrap JS -->
+<!-- ================================= -->
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
+<!-- ================================= -->
+<!-- Chart.js -->
+<!-- ================================= -->
+
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<!-- ================================= -->
+<!-- Custom JS -->
+<!-- ================================= -->
 
 <script src="{% static 'transport/js/script.js' %}"></script>
 
 {% block js %}
-
 {% endblock %}
+
+<script>
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    // ==========================
+    // Sidebar Toggle
+    // ==========================
+
+    const menuToggle = document.getElementById("menuToggle");
+    const sidebar = document.querySelector(".sidebar");
+
+    if (menuToggle) {
+
+        menuToggle.addEventListener("click", function () {
+
+            sidebar.classList.toggle("active");
+
+        });
+
+    }
+
+    // ==========================
+    // Scroll To Top
+    // ==========================
+
+    const scrollBtn = document.getElementById("scrollTopBtn");
+
+    window.addEventListener("scroll", function () {
+
+        if (window.scrollY > 250) {
+
+            scrollBtn.classList.add("show");
+
+        } else {
+
+            scrollBtn.classList.remove("show");
+
+        }
+
+    });
+
+    scrollBtn.addEventListener("click", function () {
+
+        window.scrollTo({
+
+            top: 0,
+
+            behavior: "smooth"
+
+        });
+
+    });
+
+    // ==========================
+    // Loading Overlay
+    // ==========================
+
+    const loading = document.getElementById("loadingOverlay");
+
+    window.addEventListener("load", function () {
+
+        if (loading) {
+
+            loading.style.opacity = "0";
+
+            setTimeout(function () {
+
+                loading.style.display = "none";
+
+            }, 300);
+
+        }
+
+    });
+
+});
+</script>
 
 </body>
 

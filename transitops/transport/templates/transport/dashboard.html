@@ -1,127 +1,123 @@
-{% extends 'transport/base.html' %}
-{% load static %}
+{% extends "transport/base.html" %}
 
 {% block title %}
+Dashboard | TransitOps
+{% endblock %}
+
+{% block page_title %}
 Dashboard
 {% endblock %}
 
-{% block body %}
+{% block content %}
 
-<div class="main-layout">
+<div class="dashboard-container">
 
-    <!-- ================= Sidebar ================= -->
+    <!-- ===================================== -->
+    <!-- PAGE HEADER -->
+    <!-- ===================================== -->
 
-    <aside class="sidebar">
+    <div class="dashboard-header">
 
-        <div class="logo">
+        <div>
 
-            <div class="logo-icon">
+            <h2 class="mb-1">
+
+                Fleet Dashboard
+
+            </h2>
+
+            <p class="text-muted mb-0">
+
+                Welcome back,
+                <strong>{{ request.user.username }}</strong>
+
+            </p>
+
+        </div>
+
+        <div class="d-flex gap-2">
+
+            <a href="{% url 'trip_add' %}"
+               class="btn btn-primary">
+
+                <i class="bi bi-plus-circle"></i>
+
+                New Trip
+
+            </a>
+
+            <a href="{% url 'fleet' %}"
+               class="btn btn-outline-dark">
+
                 <i class="bi bi-truck"></i>
-            </div>
 
-            <div>
-                <h3>TransitOps</h3>
-                <span>Transport Platform</span>
-            </div>
+                Fleet
+
+            </a>
 
         </div>
 
-        <ul class="menu">
+    </div>
 
-            <li class="active">
-                <a href="{% url 'dashboard' %}">
-                    <i class="bi bi-speedometer2"></i>
-                    Dashboard
-                </a>
-            </li>
+    <!-- ===================================== -->
+    <!-- KPI CARDS -->
+    <!-- ===================================== -->
 
-            <li>
-                <a href="{% url 'vehicles' %}">
+    <div class="row g-4 mt-1">
+
+        <div class="col-xl-3 col-md-6">
+
+            <div class="dashboard-card">
+
+                <div class="card-icon blue">
+
                     <i class="bi bi-truck"></i>
-                    Vehicle Registry
-                </a>
-            </li>
 
-            <li>
-                <a href="{% url 'drivers' %}">
+                </div>
+
+                <div>
+
+                    <h3>
+
+                        {{ total_vehicles|default:0 }}
+
+                    </h3>
+
+                    <span>
+
+                        Total Vehicles
+
+                    </span>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-xl-3 col-md-6">
+
+            <div class="dashboard-card">
+
+                <div class="card-icon green">
+
                     <i class="bi bi-person-badge"></i>
-                    Driver Management
-                </a>
-            </li>
-
-            <li>
-                <a href="{% url 'trips' %}">
-                    <i class="bi bi-signpost-2"></i>
-                    Trip Dispatcher
-                </a>
-            </li>
-
-            <li>
-                <a href="{% url 'maintenance' %}">
-                    <i class="bi bi-tools"></i>
-                    Maintenance
-                </a>
-            </li>
-
-            <li>
-                <a href="{% url 'fuel' %}">
-                    <i class="bi bi-fuel-pump"></i>
-                    Fuel & Expense
-                </a>
-            </li>
-
-            <li>
-                <a href="{% url 'reports' %}">
-                    <i class="bi bi-bar-chart-line"></i>
-                    Reports
-                </a>
-            </li>
-
-            <li>
-                <a href="{% url 'settings' %}">
-                    <i class="bi bi-gear"></i>
-                    Settings
-                </a>
-            </li>
-
-        </ul>
-
-    </aside>
-
-    <!-- ================= Content ================= -->
-
-    <main class="content">
-
-        <!-- Top Bar -->
-
-        <div class="topbar">
-
-            <div>
-
-                <h2>Dashboard</h2>
-
-                <small style="color:#999;">
-                    Welcome back, Fleet Manager
-                </small>
-
-            </div>
-
-            <div class="profile">
-
-                <div class="search-box">
-
-                    <i class="bi bi-search"></i>
-
-                    <input type="text"
-                           placeholder="Search...">
 
                 </div>
 
-                <div class="user">
+                <div>
 
-                    <i class="bi bi-person-circle"></i>
+                    <h3>
 
-                    <span>Admin</span>
+                        {{ total_drivers|default:0 }}
+
+                    </h3>
+
+                    <span>
+
+                        Drivers
+
+                    </span>
 
                 </div>
 
@@ -129,253 +125,347 @@ Dashboard
 
         </div>
 
-        <!-- KPI Cards -->
-
-        <div class="cards">
+        <div class="col-xl-3 col-md-6">
 
             <div class="dashboard-card">
 
-                <small>Total Vehicles</small>
+                <div class="card-icon orange">
 
-                <h2>53</h2>
+                    <i class="bi bi-map"></i>
 
-                <span class="text-success">
-                    +12%
-                </span>
+                </div>
 
-            </div>
+                <div>
 
-            <div class="dashboard-card">
+                    <h3>
 
-                <small>Active Drivers</small>
+                        {{ total_trips|default:0 }}
 
-                <h2>41</h2>
+                    </h3>
 
-                <span class="text-success">
-                    +5%
-                </span>
+                    <span>
 
-            </div>
+                        Trips
 
-            <div class="dashboard-card">
+                    </span>
 
-                <small>Trips Today</small>
-
-                <h2>27</h2>
-
-                <span class="text-success">
-                    +8%
-                </span>
-
-            </div>
-
-            <div class="dashboard-card">
-
-                <small>Fuel Cost</small>
-
-                <h2>₹28K</h2>
-
-                <span class="text-danger">
-                    -3%
-                </span>
+                </div>
 
             </div>
 
         </div>
 
-        <!-- Dashboard Row -->
+        <div class="col-xl-3 col-md-6">
 
-        <div class="dashboard-row">
-                        <!-- Recent Trips -->
+            <div class="dashboard-card">
 
-            <div class="recent-trips">
+                <div class="card-icon red">
 
-                <div class="section-header">
-
-                    <h4>Recent Trips</h4>
-
-                    <button class="btn btn-warning btn-sm">
-                        View All
-                    </button>
+                    <i class="bi bi-cash-stack"></i>
 
                 </div>
 
-                <table class="table table-dark table-borderless align-middle">
+                <div>
 
-                    <thead>
+                    <h3>
 
-                        <tr>
+                        ₹ {{ total_expense|default:0 }}
 
-                            <th>Trip ID</th>
-                            <th>Driver</th>
-                            <th>Vehicle</th>
-                            <th>Status</th>
+                    </h3>
 
-                        </tr>
+                    <span>
 
-                    </thead>
+                        Total Expense
 
-                    <tbody>
+                    </span>
 
-                        <tr>
-
-                            <td>#TR101</td>
-
-                            <td>Rahul Sharma</td>
-
-                            <td>MH12AB4589</td>
-
-                            <td>
-
-                                <span class="badge bg-success">
-
-                                    Completed
-
-                                </span>
-
-                            </td>
-
-                        </tr>
-
-                        <tr>
-
-                            <td>#TR102</td>
-
-                            <td>Amit Singh</td>
-
-                            <td>DL04XY7895</td>
-
-                            <td>
-
-                                <span class="badge bg-warning text-dark">
-
-                                    Running
-
-                                </span>
-
-                            </td>
-
-                        </tr>
-
-                        <tr>
-
-                            <td>#TR103</td>
-
-                            <td>Mohit Kumar</td>
-
-                            <td>RJ19MN4587</td>
-
-                            <td>
-
-                                <span class="badge bg-danger">
-
-                                    Delayed
-
-                                </span>
-
-                            </td>
-
-                        </tr>
-
-                        <tr>
-
-                            <td>#TR104</td>
-
-                            <td>Rohit Verma</td>
-
-                            <td>UP32AA4455</td>
-
-                            <td>
-
-                                <span class="badge bg-success">
-
-                                    Completed
-
-                                </span>
-
-                            </td>
-
-                        </tr>
-
-                    </tbody>
-
-                </table>
+                </div>
 
             </div>
 
-            <!-- Fleet Status -->
+        </div>
 
-            <div class="fleet-status">
+    </div>
 
-                <h4 class="mb-4">
+        <!-- ===================================== -->
+    <!-- FLEET STATUS + QUICK ACTIONS -->
+    <!-- ===================================== -->
 
-                    Fleet Status
+    <div class="row mt-4">
+
+        <!-- Fleet Status -->
+
+        <div class="col-lg-8">
+
+            <div class="dashboard-panel">
+
+                <div class="panel-header d-flex justify-content-between align-items-center">
+
+                    <h5 class="mb-0">
+
+                        Fleet Status
+
+                    </h5>
+
+                    <span class="badge bg-success">
+
+                        Live Overview
+
+                    </span>
+
+                </div>
+
+                <div class="row g-3 mt-2">
+
+                    <div class="col-md-4">
+
+                        <div class="status-card available">
+
+                            <h2>
+
+                                {{ total_vehicles|default:0 }}
+
+                            </h2>
+
+                            <span>
+
+                                Available Vehicles
+
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                    <div class="col-md-4">
+
+                        <div class="status-card running">
+
+                            <h2>
+
+                                {{ active_trips|default:0 }}
+
+                            </h2>
+
+                            <span>
+
+                                Running Trips
+
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                    <div class="col-md-4">
+
+                        <div class="status-card maintenance">
+
+                            <h2>
+
+                                {{ alerts|length }}
+
+                            </h2>
+
+                            <span>
+
+                                Maintenance Alerts
+
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- Quick Actions -->
+
+        <div class="col-lg-4">
+
+            <div class="dashboard-panel">
+
+                <div class="panel-header">
+
+                    <h5 class="mb-0">
+
+                        Quick Actions
+
+                    </h5>
+
+                </div>
+
+                <div class="d-grid gap-3 mt-3">
+
+                    <a href="{% url 'vehicle_add' %}"
+                       class="btn btn-outline-primary">
+
+                        <i class="bi bi-truck me-2"></i>
+
+                        Add Vehicle
+
+                    </a>
+
+                    <a href="{% url 'driver_add' %}"
+                       class="btn btn-outline-success">
+
+                        <i class="bi bi-person-plus me-2"></i>
+
+                        Add Driver
+
+                    </a>
+
+                    <a href="{% url 'trip_add' %}"
+                       class="btn btn-outline-warning">
+
+                        <i class="bi bi-map me-2"></i>
+
+                        Create Trip
+
+                    </a>
+
+                    <a href="{% url 'expense_add' %}"
+                       class="btn btn-outline-danger">
+
+                        <i class="bi bi-cash-stack me-2"></i>
+
+                        Add Expense
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- ===================================== -->
+    <!-- MINI STATS -->
+    <!-- ===================================== -->
+
+    <div class="row mt-4">
+
+        <div class="col-md-3">
+
+            <div class="mini-stat">
+
+                <h4>
+
+                    {{ total_vehicles|default:0 }}
 
                 </h4>
 
-                <div class="status-item">
+                <span>
 
-                    <div class="d-flex justify-content-between">
+                    Registered Fleet
 
-                        <span>Available</span>
+                </span>
 
-                        <span>72%</span>
+            </div>
 
-                    </div>
+        </div>
 
-                    <div class="progress mt-2 mb-4">
+        <div class="col-md-3">
 
-                        <div class="progress-bar bg-success"
+            <div class="mini-stat">
 
-                            style="width:72%">
+                <h4>
 
-                        </div>
+                    {{ total_drivers|default:0 }}
 
-                    </div>
+                </h4>
+
+                <span>
+
+                    Drivers
+
+                </span>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-3">
+
+            <div class="mini-stat">
+
+                <h4>
+
+                    {{ total_trips|default:0 }}
+
+                </h4>
+
+                <span>
+
+                    Completed Trips
+
+                </span>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-3">
+
+            <div class="mini-stat">
+
+                <h4>
+
+                    {{ active_trips|default:0 }}
+
+                </h4>
+
+                <span>
+
+                    Active Trips
+
+                </span>
+
+            </div>
+
+        </div>
+
+    </div>
+
+        <!-- ===================================== -->
+    <!-- ANALYTICS CHARTS -->
+    <!-- ===================================== -->
+
+    <div class="row mt-4">
+
+        <!-- Revenue Chart -->
+
+        <div class="col-lg-8">
+
+            <div class="dashboard-panel">
+
+                <div class="panel-header d-flex justify-content-between align-items-center">
+
+                    <h5 class="mb-0">
+
+                        Revenue vs Expense
+
+                    </h5>
+
+                    <span class="badge bg-primary">
+
+                        Last 6 Months
+
+                    </span>
 
                 </div>
 
-                <div class="status-item">
+                <div class="chart-container">
 
-                    <div class="d-flex justify-content-between">
+                    <canvas id="revenueChart">
 
-                        <span>On Trip</span>
-
-                        <span>18%</span>
-
-                    </div>
-
-                    <div class="progress mt-2 mb-4">
-
-                        <div class="progress-bar bg-warning"
-
-                            style="width:18%">
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-                <div class="status-item">
-
-                    <div class="d-flex justify-content-between">
-
-                        <span>Maintenance</span>
-
-                        <span>10%</span>
-
-                    </div>
-
-                    <div class="progress mt-2">
-
-                        <div class="progress-bar bg-danger"
-
-                            style="width:10%">
-
-                        </div>
-
-                    </div>
+                    </canvas>
 
                 </div>
 
@@ -383,8 +473,559 @@ Dashboard
 
         </div>
 
-    </main>
+        <!-- Fleet Distribution -->
 
-</div>
+        <div class="col-lg-4">
+
+            <div class="dashboard-panel">
+
+                <div class="panel-header">
+
+                    <h5 class="mb-0">
+
+                        Fleet Distribution
+
+                    </h5>
+
+                </div>
+
+                <div class="chart-container">
+
+                    <canvas id="fleetChart">
+
+                    </canvas>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- ===================================== -->
+    <!-- PERFORMANCE SUMMARY -->
+    <!-- ===================================== -->
+
+    <div class="row mt-4">
+
+        <div class="col-lg-3">
+
+            <div class="summary-card">
+
+                <small>
+
+                    Monthly Revenue
+
+                </small>
+
+                <h3>
+
+                    ₹ 2.45 L
+
+                </h3>
+
+                <span class="text-success">
+
+                    <i class="bi bi-arrow-up"></i>
+
+                    +12%
+
+                </span>
+
+            </div>
+
+        </div>
+
+        <div class="col-lg-3">
+
+            <div class="summary-card">
+
+                <small>
+
+                    Monthly Expense
+
+                </small>
+
+                <h3>
+
+                    ₹ 1.10 L
+
+                </h3>
+
+                <span class="text-danger">
+
+                    <i class="bi bi-arrow-down"></i>
+
+                    -4%
+
+                </span>
+
+            </div>
+
+        </div>
+
+        <div class="col-lg-3">
+
+            <div class="summary-card">
+
+                <small>
+
+                    Fuel Efficiency
+
+                </small>
+
+                <h3>
+
+                    16.8 km/L
+
+                </h3>
+
+                <span class="text-success">
+
+                    Excellent
+
+                </span>
+
+            </div>
+
+        </div>
+
+        <div class="col-lg-3">
+
+            <div class="summary-card">
+
+                <small>
+
+                    Fleet Utilization
+
+                </small>
+
+                <h3>
+
+                    87%
+
+                </h3>
+
+                <span class="text-primary">
+
+                    Healthy
+
+                </span>
+
+            </div>
+
+        </div>
+
+    </div>
+
+        <!-- ===================================== -->
+    <!-- RECENT TRIPS & ALERTS -->
+    <!-- ===================================== -->
+
+    <div class="row mt-4">
+
+        <!-- Recent Trips -->
+
+        <div class="col-lg-8">
+
+            <div class="dashboard-panel">
+
+                <div class="panel-header d-flex justify-content-between align-items-center">
+
+                    <h5 class="mb-0">
+
+                        Recent Trips
+
+                    </h5>
+
+                    <a href="{% url 'trips' %}"
+                       class="btn btn-sm btn-outline-primary">
+
+                        View All
+
+                    </a>
+
+                </div>
+
+                <div class="table-responsive mt-3">
+
+                    <table class="table table-hover align-middle">
+
+                        <thead>
+
+                            <tr>
+
+                                <th>Trip ID</th>
+
+                                <th>Vehicle</th>
+
+                                <th>Driver</th>
+
+                                <th>Status</th>
+
+                                <th>Distance</th>
+
+                            </tr>
+
+                        </thead>
+
+                        <tbody>
+
+                            {% for trip in recent_trips %}
+
+                            <tr>
+
+                                <td>
+
+                                    <strong>{{ trip.trip_id }}</strong>
+
+                                </td>
+
+                                <td>
+
+                                    {{ trip.vehicle.vehicle_number }}
+
+                                </td>
+
+                                <td>
+
+                                    {{ trip.driver.full_name }}
+
+                                </td>
+
+                                <td>
+
+                                    {% if trip.status == "ONGOING" %}
+
+                                        <span class="badge bg-success">
+
+                                            Running
+
+                                        </span>
+
+                                    {% elif trip.status == "COMPLETED" %}
+
+                                        <span class="badge bg-primary">
+
+                                            Completed
+
+                                        </span>
+
+                                    {% else %}
+
+                                        <span class="badge bg-warning text-dark">
+
+                                            Pending
+
+                                        </span>
+
+                                    {% endif %}
+
+                                </td>
+
+                                <td>
+
+                                    {{ trip.distance }} km
+
+                                </td>
+
+                            </tr>
+
+                            {% empty %}
+
+                            <tr>
+
+                                <td colspan="5"
+                                    class="text-center text-muted py-4">
+
+                                    No Trips Available
+
+                                </td>
+
+                            </tr>
+
+                            {% endfor %}
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- Right Side -->
+
+        <div class="col-lg-4">
+
+            <!-- Alerts -->
+
+            <div class="dashboard-panel mb-4">
+
+                <div class="panel-header">
+
+                    <h5 class="mb-0">
+
+                        Maintenance Alerts
+
+                    </h5>
+
+                </div>
+
+                <div class="alert-list mt-3">
+
+                    {% for alert in alerts %}
+
+                        <div class="alert-item">
+
+                            <div>
+
+                                <strong>
+
+                                    {{ alert.title }}
+
+                                </strong>
+
+                                <div class="small text-muted">
+
+                                    {{ alert.description|truncatechars:50 }}
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    {% empty %}
+
+                        <div class="text-muted">
+
+                            No Active Alerts
+
+                        </div>
+
+                    {% endfor %}
+
+                </div>
+
+            </div>
+
+            <!-- Notifications -->
+
+            <div class="dashboard-panel">
+
+                <div class="panel-header">
+
+                    <h5 class="mb-0">
+
+                        Recent Notifications
+
+                    </h5>
+
+                </div>
+
+                <div class="notification-list mt-3">
+
+                    {% for notification in recent_notifications %}
+
+                        <div class="notification-item">
+
+                            <strong>
+
+                                {{ notification.title }}
+
+                            </strong>
+
+                            <p class="small text-muted mb-0">
+
+                                {{ notification.message|truncatechars:60 }}
+
+                            </p>
+
+                        </div>
+
+                    {% empty %}
+
+                        <div class="text-muted">
+
+                            No Notifications
+
+                        </div>
+
+                    {% endfor %}
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    </div>
+
+{% endblock %}
+
+{% block js %}
+
+<script>
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    // =====================================
+    // Revenue vs Expense Chart
+    // =====================================
+
+    const revenueChart = document.getElementById("revenueChart");
+
+    if (revenueChart) {
+
+        new Chart(revenueChart, {
+
+            type: "line",
+
+            data: {
+
+                labels: [
+                    "Jan",
+                    "Feb",
+                    "Mar",
+                    "Apr",
+                    "May",
+                    "Jun"
+                ],
+
+                datasets: [
+
+                    {
+
+                        label: "Revenue",
+
+                        data: [42, 56, 48, 71, 82, 95],
+
+                        borderWidth: 3,
+
+                        tension: 0.4,
+
+                        fill: false
+
+                    },
+
+                    {
+
+                        label: "Expense",
+
+                        data: [28, 34, 39, 46, 55, 60],
+
+                        borderWidth: 3,
+
+                        tension: 0.4,
+
+                        fill: false
+
+                    }
+
+                ]
+
+            },
+
+            options: {
+
+                responsive: true,
+
+                maintainAspectRatio: false,
+
+                plugins: {
+
+                    legend: {
+
+                        position: "top"
+
+                    }
+
+                }
+
+            }
+
+        });
+
+    }
+
+    // =====================================
+    // Fleet Distribution Chart
+    // =====================================
+
+    const fleetChart = document.getElementById("fleetChart");
+
+    if (fleetChart) {
+
+        new Chart(fleetChart, {
+
+            type: "doughnut",
+
+            data: {
+
+                labels: [
+
+                    "Available",
+
+                    "Running",
+
+                    "Maintenance"
+
+                ],
+
+                datasets: [
+
+                    {
+
+                        data: [
+
+                            {{ total_vehicles|default:0 }},
+
+                            {{ active_trips|default:0 }},
+
+                            {{ alerts|length }}
+
+                        ],
+
+                        borderWidth: 0
+
+                    }
+
+                ]
+
+            },
+
+            options: {
+
+                responsive: true,
+
+                maintainAspectRatio: false,
+
+                cutout: "70%",
+
+                plugins: {
+
+                    legend: {
+
+                        position: "bottom"
+
+                    }
+
+                }
+
+            }
+
+        });
+
+    }
+
+});
+
+</script>
 
 {% endblock %}
