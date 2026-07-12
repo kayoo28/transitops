@@ -146,79 +146,14 @@
 
                 </div>
 
-                <!-- Vendor / Payee -->
+                
 
-                <div class="col-md-6 mb-3">
-
-                    <label class="form-label">
-
-                        Vendor / Payee
-
-                    </label>
-
-                    {{ form.vendor }}
-
-                </div>
-
-                <!-- Payment Method -->
-
-                <div class="col-md-6 mb-3">
-
-                    <label class="form-label">
-
-                        Payment Method
-
-                    </label>
-
-                    {{ form.payment_method }}
-
-                </div>
-
-                <!-- Receipt Upload -->
-
-                <div class="col-md-6 mb-3">
-
-                    <label class="form-label">
-
-                        Receipt / Invoice
-
-                    </label>
-
-                    {{ form.receipt }}
-
-                </div>
-
+                
                 <!-- Current Receipt -->
 
-                <div class="col-md-6 mb-3">
+                
 
-                    {% if expense and expense.receipt %}
-
-                        <label class="form-label">
-
-                            Current Receipt
-
-                        </label>
-
-                        <div class="mt-2">
-
-                            <a href="{{ expense.receipt.url }}"
-                               target="_blank"
-                               class="btn btn-outline-primary">
-
-                                <i class="bi bi-file-earmark-text me-2"></i>
-
-                                View Receipt
-
-                            </a>
-
-                        </div>
-
-                    {% endif %}
-
-                </div>
-
-                            </div>
+            </div>
 
             <!-- ===================================== -->
             <!-- FORM ERRORS -->
